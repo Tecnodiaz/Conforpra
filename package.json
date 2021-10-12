@@ -1,0 +1,24 @@
+{
+  "name": "conforpra",
+  "version": "1.0.0",
+  "description": "\"Este es el proyecto de facturacion Conforpra\"",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -c.extraMetadata.main=./index.js"
+  },
+  "author": "\"Tecno Diaz\"",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^15.0.0",
+    "electron-builder": "^22.11.7",
+    "electron-reload": "^2.0.0-alpha.1"
+  },
+  "dependencies": {
+    "electron-packager": "^15.4.0",
+    "electron-pos-printer": "^1.2.4",
+    "mysql": "^2.18.1",
+    "promise-mysql": "^5.0.4"
+  }
+}
