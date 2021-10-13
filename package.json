@@ -11,13 +11,14 @@
   "author": "\"Tecno Diaz\"",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^15.0.0",
+    "electron": "^15.1.2",
     "electron-builder": "^22.11.7",
     "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
     "electron-packager": "^15.4.0",
     "electron-pos-printer": "^1.2.4",
+    "electron-updater": "^4.3.9",
     "mysql": "^2.18.1",
     "promise-mysql": "^5.0.4"
   }
