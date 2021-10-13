@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder -c.extraMetadata.main=./index.js"
+    "dist": "electron-builder -c.extraMetadata.main=./index.js",
+    "increment-version": "versiony package.json --patch && git add . && git commit -m 'new version' && git push"
   },
   "repository": {
     "type": "git",
