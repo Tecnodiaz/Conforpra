@@ -7,7 +7,9 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder -c.extraMetadata.main=./index.js",
-    "increment-version": "versiony package.json --patch && git add . && git commit -m 'new version' && git push"
+    "increment-version": "versiony package.json --patch && git add . && git commit -m 'new version' && git push",
+    "exe":"npx electron-packager . Conforpra --platform=win32"
+
   },
   "repository": {
     "type": "git",
