@@ -8,6 +8,10 @@
     "pack": "electron-builder --dir",
     "dist": "electron-builder -c.extraMetadata.main=./index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tecnodiaz/Conforpra.git"
+  },
   "author": "\"Tecno Diaz\"",
   "license": "ISC",
   "devDependencies": {
@@ -20,6 +24,7 @@
     "electron-pos-printer": "^1.2.4",
     "electron-updater": "^4.3.9",
     "mysql": "^2.18.1",
-    "promise-mysql": "^5.0.4"
+    "promise-mysql": "^5.0.4",
+    "versiony": "^2.0.1"
   }
 }
