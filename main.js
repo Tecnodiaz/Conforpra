@@ -8,6 +8,7 @@ const fs = require('fs')
 const os = require('os')
 const path = require('path')
 const shell = electron.shell
+const { autoUpdater } = require('electron-updater')
 
 let WinFom;
 let win;
@@ -24,6 +25,7 @@ function createWindow(){
     }
 })
 win.loadFile('src/views/Facturas.html')
+autoUpdater.checkForUpdatesAndNotify()
 createWindowPrint()
 win.on("closed", ()=>{
     winPrint.close()
