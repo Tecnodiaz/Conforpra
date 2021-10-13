@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>Conforpra</title>
+    <link rel="stylesheet" href="../asset/css/Base.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">    
+
+  <script src="../js/Navegacion.js"></script>
+<script  src="../js/Login.js"></script>
+<script src="../js/FacturaPrint.js"></script>    
+<script src="../js/Facturas.js"></script>
+<script src="../js/Cliente.js"></script>
+<script src="../js/Usuario.js"></script>
+<script src="../js/Servicios.js"></script>
+<script src="../js/Ventas.js"></script>
+<script src="../js/Reporte.js"></script>
+<script src="../js/NFC.js"></script>
+
+  
+</head>
+  <body>
+
+    <div id="login">
+
+  <img src="../asset/img/ConforpraLogo.711aaba0.png" id="logo" width="25%">
+  <center>
+  <div id="formulario">
+
+  <h5>Usuario</h5>
+  <input type="text" class="textbox" id="UsuarioT"> <br>
+  <h5>Contraseña</h5>
+  <input type="password" class="textbox" id="Password">
+<br>
+  <input type="button" value="Iniciar Sesion" id="botonIniciar">
+</div>
+</center>
+
+</div>
+
+      <header class="header" id="header"  style="display: none;">
+        
+      </header>
+    <div class="div1" id="div1" style="display: none;">
+
+<img src="../asset/img/ConforpraLogo.711aaba0.png" alt="" class="logoEmpresarial" id="LogoEmpre" >
+
+      <div class="SubMenuBtn" id="ClienteSub" onclick="ClienView()">
+<img src="../asset/img/valor (1).png" alt="" id="iconImg" class="iconMenu">
+        <a class="textMenu" id="titulMenu" > Cliente </a>
+      </div>
+
+<div class="SubMenuBtn" id="FacturaSub" onclick="FacturaView()">
+  <img src="../asset/img/factura.png" alt="" id="iconImg2" class="iconMenu">
+    <a class="textMenu" id="titulMenu2" > Factura </a>
+              </div>
+    
+     <div class="SubMenuBtn" id="NCFSub" onclick="NFCView()">
+      <img src="../asset/img/patrocinador (1).png" alt="" id="iconImg3" class="iconMenu">
+                <a class="textMenu" id="titulMenu3" > NCF </a>
+                      </div>
+
+                      <div class="SubMenuBtn" id="ReporteSub" onclick="ReporteView()">
+                        <img src="../asset/img/dinero.png" alt="" id="iconImg4" class="iconMenu">
+                        <a class="textMenu" id="titulMenu4" >Reporte </a>
+                              </div>
+
+                              <div class="SubMenuBtn" id="ServiciosSub" onclick="ServiciosView()">
+                                <img src="../asset/img/paquete.png" alt="" id="iconImg5" class="iconMenu">
+                                <a class="textMenu" id="titulMenu5" >Servicios</a>
+                                      </div>
+                                      <div class="SubMenuBtn" id="UsuarioSub">
+                                        <img src="../asset/img/usuario.png" alt="" id="iconImg6" class="iconMenu">
+                                        <a class="textMenu" id="titulMenu6" >Usuario</a>
+                                              </div>    
+            </div>
+
+    
+
+    <div class="div2" id="div2" style="display: none;">
+<div id="Factura">
+  <img src="../asset/img/google-docs (1).png" class="logoIconVentana" >  
+  <h5 class="tituloPrincipal">Factura</h5>
+
+
+  <button class="BotonAgregar" onclick="VentasView()">
+    Nueva venta
+  </button>
+  <button class="BtnBuscar" id="btnFindF">
+    <img src="../asset/img/lupa.png" width="18px" style="margin-top: 1px;">
+  </button>
+  
+  <input type="text" class="inputBuscar" placeholder="Buscar por nombre" id="searchF">
+
+<table class="styled-table">
+  <tr>
+    <thead>
+    <th>Numero</th>
+    <th>Cliente</th>
+    <th>Fecha</th>
+    <th>Total</th>
+    <th>Tipo</th>
+    <th>Factura</th>
+  </thead>
+  </tr>
+  <tr class="">
+    <tbody id="mylistFac">
+    </tbody>
+  </tr>
+</table>
+
+
+</div>
+
+
+
+
+<div id="Cliente" style="display: none;">
+
+  <img src="../asset/img/valor.png" class="logoIconVentana" >  
+  <h5 class="tituloPrincipal">Cliente</h5>
+
+
+  <button class="BotonAgregar" id="OpenForm">
+    Agregar Cliente
+  </button>
+
+  <button class="BtnBuscar" id="brnFind">
+    <img src="../asset/img/lupa.png" width="18px" style="margin-top: 1px;">
+  </button>
+  
+  <input type="text" class="inputBuscar" id="searchC" placeholder="Buscar por nombre">
+
+
+  <table class="styled-table">
+    <tr>
+      <thead>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Identidad</th>
+      <th>Telefono</th>
+      <th>Direccion</th>
+      <th>Email</th>
+      <th>Tipo</th>
+    </thead>
+    </tr>
+    <tr class="">
+      <tbody id="mylistCliente">
+      </tbody>
+    </tr>
+  </table>
+
+</div>
+
+<div id="Ventas" style="display: none;">
+  <img src="../asset/img/etiqueta-de-venta.png" class="logoIconVentana" >  
+  <h5 class="tituloPrincipal">Ventas</h5>
+<p class="titulosVentas">Cliente</p>
+<input list="clientesDataList" type="text" class="inputComunes" id="inputCliente" required>
+<datalist id="clientesDataList">
+</datalist>
+
+<select class="com" id="Cotizacion" name="Cotizacion">
+  <option value="2">Cotizacion</option>
+  <option value="1">Venta</option>
+</select>
+
+
+<p class="titulosVentas">Fecha</p>
+
+<input type="text" class="inputComunes" id="titulosVentas" required>
+
+<select class="com" id="comprobanteVentas">
+  <option value="NULL">Sin Comprobante</option>
+  <option value="2">Comprobante</option>
+</select>
+
+
+<table class="styled-table">
+  <tr>
+    <thead>
+    <th>Producto</th>
+    <th>Cantidad</th>
+    <th>Precio</th>
+    <th>Total Precio</th>
+  </thead>
+  </tr>
+  <tr class="">
+    <tbody id="mylistVentas">
+      <tr>
+        <td id="tdNuevo">
+        <input list="DatalistVenta" type="text" class="inputComunes" style="width: 100%; height: 60%" name="ArticuloId" required>
+
+        <datalist id="DatalistVenta">
+        </datalist>
+        
+      </td>
+        
+        <td><input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="CantidadTabla" required></td>
+        
+        <td>
+         <input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="PrecioTabla" required>
+      </td>
+
+      <td Name="Idnew" >
+     </td>
+     
+      </tr>
+     
+</tbody>
+  </tr>
+</table>
+
+
+<button class="BtnNewB" id="AgregarLinea">Agregar Producto</button>
+
+<textarea class="BtnNewB" id="Comentario" cols="30" rows="10" style="width: 20%; height: 90px; margin-top: 30px;"></textarea>
+<div class="tablaMenu" id="tablaMenu">
+</div>
+<div class="BarBtn">
+<button class="BtnAction" style="background: #FF3C3C;" id="BtnCancelar">Cancelar</button>
+<button class="BtnAction" style="background: #059BAF;" id="BtnGuardar">Guardar</button>
+<button class="BtnAction" style="background: #FFF730;" id="BtnActualizar">Actualizar</button>
+</div>
+</div>
+
+
+<div id="NFC" style="display: none;">
+    <img src="../asset/img/patrocinador (2).png" class="logoIconVentana" >  
+    <h5 class="tituloPrincipal">NFC</h5>
+  
+    
+    <table class="styled-table" style="width: 60%;">
+      <tr>
+        <thead>
+        <th>ID</th>
+        <th>NFC</th>
+        <th>Estatus</th>
+      </thead>
+      </tr>
+      <tr class="">
+        <tbody id="mylistNFC">
+
+        </tbody>
+      </tr>
+    </table>
+  
+  
+  
+  <div class="encabezadoForm" >
+    <h5>Formulario</h5>
+  </div>
+  
+  <form class="formulario">
+    <p>NFC</p>
+    <center>
+  <input type="text" class="inputNew" id="Nfc" required>
+  </center>
+  <center>
+
+  <button class="BtnAgregar" id="addNfc">
+    Agregar NFC
+  </button>
+  </center>
+  </form>
+  
+  </div>
+
+
+
+
+
+<div id="Reporte" style="display: none;">
+
+  <img src="../asset/img/dinero (1).png" class="logoIconVentana" >  
+  <h5 class="tituloPrincipal">Reporte</h5>
+<div class="Monto">
+
+</div>
+
+<select class="comprobante" id="FitlrarComprobante">
+  <option value="Todo">Todo</option>
+  <option value="Comprobante">Comprobante</option>
+  <option value="Sin Comprobante">Sin Comprobante</option>
+</select>
+
+<div class="Fechas">
+
+  <a class="titulo">Desde</a> <a>Hasta</a>
+  <br>
+  <input type="date" class="Antes" id="Antes" min="2021-09-27">
+
+
+  <input type="date" class="Despues" id="Despues" min="2021-09-27">
+
+  <button class="BtnAgregar" id="BtnBuscar">
+    Buscar
+  </button>  
+  <button class="BtnAgregar" id="BtnBorrar">
+    Borrar filtros
+  </button> 
+</div>
+
+<table class="styled-table">
+  <tr>
+    <thead>
+    <th>Numero</th>
+    <th>Cliente</th>
+    <th>Fecha</th>
+    <th>Total</th>
+    <th>Factura</th>
+  </thead>
+  </tr>
+  <tr class="">
+    <tbody id="mylistReporte">
+    </tbody>
+  </tr>
+</table>
+</div>
+
+
+<div id=FacturaPrint style="display: none;">
+  <div id="datosEncabezado" style="width: 100%;"></div>
+  <table class="styled-table" style="width:90%;">
+    <thead>
+        <tr>
+      <th>ID Articulo</th>
+      <th>Cantidad</th>
+      <th>Precio</th>
+      <th>Total</th>
+    </thead>
+    </tr>
+    <tr class="">
+      <tbody id="mylistPrint">
+        
+</tbody>
+</table>
+<div class="BtnNewB" style="width: 20%; height: 90px; margin-top: 30px;" id="comentarioP">
+
+</div>
+<div class="tablaMenu" id="tablaResul">
+
+</div>
+<div class="BtnNewB" style="width: 100%;border: none;"><p>Conforpra. C. Juan Sánchez Ramírez 56, Santo Domingo 10105. (809)-908-4443. conforpra.servicios@gmail.com</p></div>
+<div class="navbar">
+  <button class="BtnAction" style="background: #059BAF; width: 6%;" id="BtnDescargar">Descargar</button>
+<button class="BtnAction" style="background: #FFF730; width: 6%" id="BtnPrint">Imprimir</button>
+</div>
+
+</div>
+
+<div  id="Servicios" style="display: none;">
+  <img src="../asset/img/paquete (1).png" class="logoIconVentana" >  
+  <h5 class="tituloPrincipal">Servicios</h5>
+
+  <table class="styled-table" style="width: 60%;">
+    <thead>
+        <tr>
+      <th>Eliminar</th>
+      <th>Servicio</th>
+      <th>Descripcion</th>
+      <th>Precio</th>
+      <th>Nombre</th>
+    </thead>
+    </tr>
+    <tr class="">
+      <tbody id="mylistServicios">
+
+</tbody>
+</table>
+</tr>
+
+
+
+<div class="encabezadoForm" >
+  <h5>Formulario</h5>
+</div>
+
+<form class="formulario">
+  <p>Nombre</p>
+  <center>
+  <input type="text" class="inputNew" id="NombreProduc" required>
+</center>
+<p>Descripcion</p>
+<center>
+  <textarea id="DescripcionProduc" cols="25" rows="10"></textarea>
+</center>
+<p>Precio</p>
+<center>
+  <input type="number" class="inputNew" id="PrecioProduc" required>
+</center>
+
+<p>Tipo de servicio</p>
+<center>
+  <select id="TipoServicio" style="width: 60%; height: 30px; text-align: center;">
+    <option value="1">Servicio</option>
+    <option value="2">Producto</option>
+    <option value="3">Curso</option>
+  </select>
+  <br>
+  
+<button class="BtnAgregar" id="BtnAgregarProduc">
+  Agregar
+</button>
+</center>
+</form>
+
+</div>  
+
+<div id="Usuario" style="display: none;" >
+  <img src="../asset/img/usuario (1).png" class="logoIconVentana" >  
+  <h5 class="tituloPrincipal">Usuario</h5>
+
+  <table class="styled-table" style="width: 60%;">
+    <tr>
+      <thead>
+      <th>Eliminar</th>
+      <th>Usuario</th>
+      <th>Contraseña</th>
+    </thead>
+    </tr>
+    <tr class="">
+      <tbody id="mylistUsuario">
+
+</tbody>
+    </tr>
+  </table>
+
+
+
+<div class="encabezadoForm">
+  <h5>Formulario</h5>
+</div>
+
+<form class="formulario">
+  <p>Usuario</p>
+  <center>
+<input type="text" class="inputNew" id="User" required>
+</center>
+<p>Contraseña</p>
+<center>
+<input type="text" class="inputNew" id="Contraseña" required>
+</center>
+<p>Nombre</p>
+<center>
+<input type="text" class="inputNew" id="NombreUsu" required>
+
+<button class="BtnAgregar" id="AddUsuario">
+  Agregar Usuario
+</button>
+</center>
+</form>
+
+</div>  
+
+
+</div>
+
+  </body>
+</html>
