@@ -1,6 +1,6 @@
 {
   "name": "conforpra",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "\"Este es el proyecto de facturacion Conforpra\"",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,6 @@
   "devDependencies": {
     "electron": "^15.1.2",
     "electron-builder": "^22.11.7",
-    "electron-reload": "^2.0.0-alpha.1",
     "versiony": "^2.0.1"
   },
   "dependencies": {
