@@ -2,3 +2,4 @@ node_modules
 Conforpra-linux-x64
 Conforpra-win32-x64
 dist
+.env

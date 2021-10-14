@@ -1,6 +1,6 @@
 {
   "name": "conforpra",
-  "version": "1.0.1",
+  "version": "1.0.5",
   "description": "\"Este es el proyecto de facturacion Conforpra\"",
   "main": "index.js",
   "scripts": {
@@ -23,6 +23,7 @@
     "versiony": "^2.0.1"
   },
   "dependencies": {
+    "dotenv": "^10.0.0",
     "electron-pos-printer": "^1.2.4",
     "electron-updater": "^4.3.9",
     "mysql": "^2.18.1",
@@ -33,7 +34,9 @@
       {
         "provider": "github",
         "owner": "Tecnodiaz",
-        "repo": "Conforpra"
+        "repo": "Conforpra",
+        "private": true,
+        "token": "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"
       }
     ]
   }

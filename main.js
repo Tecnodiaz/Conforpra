@@ -25,10 +25,13 @@ function createWindow(){
     }
 })
 win.loadFile('src/views/Facturas.html')
-autoUpdater.checkForUpdatesAndNotify()
+win.once("ready-to-show", () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
+  
 createWindowPrint()
 win.on("closed", ()=>{
-    winPrint.close()
+    win = null
 })   
 }
 
@@ -42,7 +45,7 @@ function createWindowPrint(){
        }
    })
 //winPrint.hide()
-   winPrint.loadFile('src/views/Login.html')
+   winPrint.loadURL('https://github.com')
 //winPrint.hide()
    winPrint.on("closed", ()=>{
     winPrint = undefined;
