@@ -15,7 +15,7 @@
     "type": "git",
     "url": "git+https://github.com/Tecnodiaz/Conforpra.git"
   },
-  "author": "\"Tecno Diaz\"",
+  "author": "TecnoDiaz",
   "license": "ISC",
   "devDependencies": {
     "electron": "^15.1.2",
