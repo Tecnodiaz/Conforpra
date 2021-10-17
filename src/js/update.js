@@ -18,7 +18,7 @@ const updateOptions = {
     gitRepoToken: "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",  // {Default is null} [Optional] The Token from GitHub to Access a Private Repo.  Only for Private Repos.
 
     appName: "conforpra", //[Required] The Name of the app archive and the app folder.
-    appExecutableName: "conforpra Setup 1.1.2.exe", //[Required] The Executable of the Application to be Run after updating.
+    appExecutableName: "conforpra Setup 1.1.3.exe", //[Required] The Executable of the Appliation to be Run after updating.
 
     progressBar: document.getElementById("download"), // {Default is null} [Optional] If Using Electron with a HTML Progressbar, use that element here, otherwise ignore
     label: document.getElementById("download-label"), // {Default is null} [Optional] If Using Electron, this will be the area where we put status updates using InnerHTML
