@@ -27,7 +27,8 @@
     "electron-pos-printer": "^1.2.4",
     "electron-updater": "^4.3.9",
     "mysql": "^2.18.1",
-    "promise-mysql": "^5.0.4"
+    "promise-mysql": "^5.0.4",
+    "uaup-js": "0.0.22"
   },
   "build": {
     "publish": [

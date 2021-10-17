@@ -24,7 +24,7 @@ function createWindow(){
         contextIsolation: false
     }
 })
-win.loadFile('src/views/Facturas.html')
+win.loadFile('src/views/cargando.html')
 win.once("ready-to-show", () => {
     autoUpdater.checkForUpdatesAndNotify();
   });
