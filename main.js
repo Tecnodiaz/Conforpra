@@ -8,7 +8,6 @@ const fs = require('fs')
 const os = require('os')
 const path = require('path')
 const shell = electron.shell
-const { autoUpdater } = require('electron-updater')
 
 let WinFom;
 let win;
@@ -16,7 +15,7 @@ let winPrint;
 
 function createWindow(){
  win = new BrowserWindow({
-   
+
     webPreferences: {
         resizable: false,
         nodeIntegration: true,
@@ -24,15 +23,14 @@ function createWindow(){
         contextIsolation: false
     }
 })
-win.loadFile('src/views/cargando.html')
-win.once("ready-to-show", () => {
-    autoUpdater.checkForUpdatesAndNotify();
-  });
-  
+win.loadFile('src/views/Facturas.html')
 createWindowPrint()
+
+
 win.on("closed", ()=>{
-    win = null
-})   
+    winPrint = undefined
+})
+
 }
 
 function createWindowPrint(){
@@ -45,13 +43,15 @@ function createWindowPrint(){
        }
    })
 //winPrint.hide()
-   winPrint.loadURL('https://github.com')
-//winPrint.hide()
+   winPrint.loadFile('src/views/Login.html')
+winPrint.hide()
    winPrint.on("closed", ()=>{
     winPrint = undefined;
 })   
-   }
-   
+}
+
+
+
 function createFormulario(){
     WinFom = new BrowserWindow({
 width:400,
@@ -70,7 +70,7 @@ resizable: false,
     ipcMain.handle('GetNFC', (event) =>{
         getNFC()
     })
-    
+
     ipcMain.handle('OpenForm', (event) =>{
         open()
     })
@@ -140,22 +140,22 @@ console.log(obj)
 ipcMain.handle('Print', (event) =>{
         Print()
     })
-    
+
 
 ipcMain.handle('OpenPrint', (event) =>{
     winPrint.show()
  })
- 
+
 ipcMain.handle('login', (event, obj) => {
     validarlogin(obj);
  })
 
  const validarlogin = async (obj) =>  {
-    
+
     let usu = obj.usuario;
     let con = obj.contraseña;
     const conn = await getconexion();
-  
+
     const sql = "SELECT * FROM `Usuario` WHERE Nom_Usuario = ? AND Contraseña = ?"
     await   conn.query(sql, [usu, con], (error, results, fields)  => 
     { 
@@ -186,9 +186,9 @@ function crearDocs(obj){
             }).show()
         })
       }
-   
-    
-    
+
+
+
 
 function open (){
     createFormulario()
@@ -232,7 +232,7 @@ db.end()
 
 async function getFactura(obj){
     const db = await getconexion()
-    
+
     const sql = 'SELECT `Factura`.`ID_Factura`, `Factura`.`SubTotal`, `Factura`.`Total`, `Factura`.`Fecha`, `Cliente`.`ID_CLI`, `Cliente`.`Nombre`, `Tipo_Factura`.`Tipo` FROM `Factura` INNER JOIN `Cliente` ON `Factura`.`ID_CLI` = `Cliente`.`ID_CLI` INNER JOIN `Tipo_Factura` ON `Factura`.`ID_Tipo_Factura` = `Tipo_Factura`.`ID_Tipo_Factura`'
     await db.query(sql,  (error, results, fields) => {
             if (error) {
@@ -351,7 +351,7 @@ async function addUser (obj){
         }
         console.log(results)
         getUsuario()
-        
+
     })
     db.end()
 }
