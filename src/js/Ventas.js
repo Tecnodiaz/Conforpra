@@ -30,6 +30,11 @@ let a;
 let porciento
 let defaul
 let Venta2
+
+let tdNew;
+let tdNewCopy
+
+
 document.addEventListener("DOMContentLoaded", function(){
     Impuesto = document.getElementById("Impuesto")
     BtnCancelar = document.getElementById("BtnCancelar")
@@ -358,8 +363,8 @@ async function agregarFactura (objFactura, objDetalles){
 function clonar(){
 
     const listChildren = mylistVentas.children;
-    const tdNew = listChildren;
-    const tdNewCopy = tdNew[0].cloneNode(true);
+     tdNew = listChildren;
+     tdNewCopy = tdNew[0].cloneNode(true);
 
     mylistVentas.appendChild(tdNewCopy);
     contador = contador + 1
@@ -367,9 +372,7 @@ function clonar(){
 
 function deleteClon(){
 
-    const listChildren = mylistVentas.children;
-    const tdNew = listChildren;
-    const tdNewCopy = tdNew[0].cloneNode(true);
+  
 
     tdNewCopy.remove()
     contador = contador - 1
