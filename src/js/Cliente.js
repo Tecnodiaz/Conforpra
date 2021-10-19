@@ -1,3 +1,4 @@
+
 let mylistCliente;
 let OpenForm;
 let brnFind
@@ -66,10 +67,16 @@ const filtro =[]
         <td>${element.Direccion}</td>
         <td>${element.Email}</td>
         <td>${element.Tipo_cliente}</td>
+        <td onclick="ModificarCli(${element.ID_CLI})" >Modificar</td>
         </tr>
         `
     })
     mylistCliente.innerHTML = template;
+}
+
+
+function ModificarCli(id){
+  ipcRenderer.invoke('ModificarCli', id)
 }
 
 ipcRenderer.on('RenderCliente', (event, results, obj) =>{

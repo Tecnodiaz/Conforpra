@@ -10,7 +10,13 @@ let TCliente
 let addCliente
 let valorTCliente
 
+let Hide
+let estul
+let editingStatus = false;
+let editProductId;
+
 document.addEventListener("DOMContentLoaded", function(){
+    Hide = document.getElementById("Hide")
     Nombre = document.getElementById("Nombre")
     Apellidos = document.getElementById("Apellidos")
     Identidad = document.getElementById("Identidad")
@@ -20,14 +26,42 @@ document.addEventListener("DOMContentLoaded", function(){
     TCliente = document.getElementById("TCliente")
     addCliente = document.getElementById("addCliente")
 
+    Hide.onclick = function(){
+        ipcRenderer.invoke("cancelarList")    
+    }
+
     addCliente.onclick = function(){
         valorTCliente = TCliente.options[TCliente.selectedIndex].value
 
-        const obj = {Nombre: Nombre.value, Apellidos: Apellidos.value, Identidad: Identidad.value, Telefono: Telefono.value, Direccion: Direccion.value, Email: Email.value, TCliente: valorTCliente}
+        const obj = {Nombre: Nombre.value, Apellidos: Apellidos.value, Identidad: Identidad.value, Telefono: Telefono.value, Direccion: Direccion.value, Email: Email.value, ID_Tipo_CLI: valorTCliente}
+
+if(editingStatus == false){
+
         ipcRenderer.invoke("addCliente", obj)
+    }else {
+        ipcRenderer.invoke("UpdateCli", obj, editProductId)
+    }
+    
+    
     limpiarCliente()
     }
+    ipcRenderer.on('EditCliente', (event, results) =>{
+        console.log(results)
+          editingStatus = true;
+          estul = results
+      
+          Nombre.value = results[0].Nombre
+          Apellidos.value = results[0].Apellidos
+          Identidad.value = results[0].Identidad
+          Telefono.value = results[0].Telefono
+          Direccion.value = results[0].Direccion
+          Email.value = results[0].Email
+          TCliente.value = results[0].ID_Tipo_CLI
+        
+          editProductId = results[0].ID_CLI;
+      })
 })
+
 
 function limpiarCliente (){
     Nombre.value = ""
@@ -37,3 +71,4 @@ function limpiarCliente (){
     Direccion.value =""
     Email.value =""
 }
+

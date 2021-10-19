@@ -2,11 +2,13 @@ body{
   background:#E7E7E7;
   margin: 0%;
 }
+
 p{
   font-family:'Roboto', sans-serif;
   text-align: center;
   margin-top: 30px;
 }
+
 h5{
   font-family:'Roboto', sans-serif;  
 }
@@ -16,6 +18,7 @@ h5{
   margin-left: 2%;
   clear: both;
 }
+
 .BtnNewB{
   border: 1px solid #B1B1B1;
   background: #ffffff;
@@ -26,13 +29,24 @@ h5{
   clear: both;
   margin-left: 10%;
 }
+
 .tablaMenu{
   height: auto;
   width: 20%;
   margin-top: 4px;
   float: right;
   margin-right: 20%;
-  margin-bottom: 150px;
+  margin-bottom: 10px;
+}
+
+.tablaM{
+  flex: left;
+  clear: both;
+  margin-top: 10%;
+  width: 100%;
+  height: 90px;
+  text-align: center;
+
 }
 
 .com{
@@ -262,6 +276,7 @@ position: fixed;
   font-weight: bold;
   font-family:'Roboto', sans-serif;
 }
+
 .div1{
   margin-top: 50px;
   width:20%;
@@ -336,32 +351,41 @@ text-align: right;
 }
 
 
-.DirreccionPrint{
-
-  font-family: 'Roboto', sans-serif;
-  font-weight: normal;
-}
 .FacturaPrint{
-
-  font-family: 'Roboto', sans-serif;
-  font-weight: normal;
-}
-.EmpresaPrint{
-float: right;
-  font-family: 'Roboto', sans-serif;
-  font-weight: normal;
-}
-.CorreoPrint{
-
-  font-family: 'Roboto', sans-serif;
-  font-weight: normal;
-}
-.FechaPrint{
-  margin: 5px;
   float: left;
   font-family: 'Roboto', sans-serif;
   font-weight: normal;
+  margin-left: 5%;
 }
+
+.FacturaEmpresa{
+  float: right;
+  margin-right: 5%;
+    font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+  }
+
+.DatosCli{
+  float: left;
+  clear: both;
+  border: 1px solid black;
+  border-radius: 13px;  
+  width: 35%;
+  margin-left: 3%;
+  font-family: 'Roboto', sans-serif;
+    font-weight: normal;
+  }
+
+.DatosFac{
+  border: 1px solid black;
+  border-radius: 13px;
+  float: right;
+  width: 35%;
+  margin-right: 6%;
+  font-family: 'Roboto', sans-serif;
+  font-weight: normal;
+}
+
 .ultimo{
   float: right;
 }
@@ -411,14 +435,9 @@ float: right;
 .navbar button {
 margin-top: 10px;
 }
-.NFCPrint{
-  float: right;
-  clear: both;
-  font-family:'Roboto', sans-serif;
-}
+
 
 .navbar a:hover {
   background-color: #ddd;
   color: black;
 }
-

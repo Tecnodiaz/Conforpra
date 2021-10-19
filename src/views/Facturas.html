@@ -143,6 +143,7 @@
       <th>Direccion</th>
       <th>Email</th>
       <th>Tipo</th>
+      <th>Cambio</th>
     </thead>
     </tr>
     <tr class="">
@@ -165,6 +166,7 @@
   <option value="2">Cotizacion</option>
   <option value="1">Venta</option>
 </select>
+<input class="com" type="checkbox" id="Impuesto" value="1">
 
 
 <p class="titulosVentas">Fecha</p>
@@ -214,6 +216,8 @@
 
 
 <button class="BtnNewB" id="AgregarLinea">Agregar Producto</button>
+
+<button class="BtnNewB" id="EliminarLinea">Eliminar</button>
 
 <textarea class="BtnNewB" id="Comentario" cols="30" rows="10" style="width: 20%; height: 90px; margin-top: 30px;"></textarea>
 <div class="tablaMenu" id="tablaMenu">
@@ -321,28 +325,39 @@
 
 
 <div id=FacturaPrint style="display: none;">
-  <div id="datosEncabezado" style="width: 100%;"></div>
-  <table class="styled-table" style="width:90%;">
-    <thead>
-        <tr>
-      <th>ID Articulo</th>
-      <th>Cantidad</th>
-      <th>Precio</th>
-      <th>Total</th>
-    </thead>
-    </tr>
-    <tr class="">
-      <tbody id="mylistPrint">
-        
-</tbody>
-</table>
-<div class="BtnNewB" style="width: 20%; height: 90px; margin-top: 30px;" id="comentarioP">
-
-</div>
-<div class="tablaMenu" id="tablaResul">
-
-</div>
-<div class="BtnNewB" style="width: 100%;border: none;"><p>Conforpra. C. Juan Sánchez Ramírez 56, Santo Domingo 10105. (809)-908-4443. conforpra.servicios@gmail.com</p></div>
+  <div id="FacturaTitle" class="FacturaPrint" >
+  </div>
+  
+      <h1 class="FacturaEmpresa">Conforpra, SRL</h1>
+      
+  
+      <div id=FacturaPrint2 class="DatosCli">
+      </div>
+  
+      <div id="FacturaPrint3" class="DatosFac"> 
+      </div>
+  
+      <thead>
+          <tr>
+                  <table class="styled-table" style="width:90%;">
+            <th>ID Articulo</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+            <th>Total</th>
+          </thead>
+          </tr>
+          <tr class="">
+            <tbody id="mylistPrint">
+              
+      </tbody>
+      </table>
+      <div class="tablaMenu" id="tablaResul">
+      </div>
+  
+      <div class="tablaM" id="comentarioP">
+          <a>Gracias por su compra</a>
+  </div>
+  
 <div class="navbar">
   <button class="BtnAction" style="background: #059BAF; width: 6%;" id="BtnDescargar">Descargar</button>
 <button class="BtnAction" style="background: #FFF730; width: 6%" id="BtnPrint">Imprimir</button>

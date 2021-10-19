@@ -13,6 +13,40 @@ let WinFom;
 let win;
 let winPrint;
 
+
+function createWindowPrint(){
+    winPrint = new BrowserWindow({
+       webPreferences: {
+           nodeIntegration: true,
+           enableRemoteModule: true,
+           contextIsolation: false
+       }
+   })
+//winPrint.hide()
+   winPrint.loadFile('src/views/Login.html')
+winPrint.on("closed", ()=>{
+    winPrint = undefined;
+})   
+}
+
+function createFormulario(){
+    WinFom = new BrowserWindow({
+width:400,
+height: 715,
+resizable: false,
+webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false
+        }
+    })
+//    WinFom.setMenu(null)
+
+    WinFom.loadFile('src/views/formulario.html')
+//   WinFom.hide()
+};
+
+
 function createWindow(){
  win = new BrowserWindow({
 
@@ -23,49 +57,21 @@ function createWindow(){
         contextIsolation: false
     }
 })
-win.loadFile('src/views/Facturas.html')
 createWindowPrint()
+createFormulario()
 
+win.loadFile('src/views/Facturas.html')
+//win.setMenu(null)
+
+//winPrint.hide()
+//WinFom.hide()
 
 win.on("closed", ()=>{
-    winPrint = undefined
+    winPrint.close()
+    WinFom.close()
 })
 
 }
-
-function createWindowPrint(){
-    winPrint = new BrowserWindow({
-       webPreferences: {
-           resizable: false,
-           nodeIntegration: true,
-           enableRemoteModule: true,
-           contextIsolation: false
-       }
-   })
-//winPrint.hide()
-   winPrint.loadFile('src/views/Login.html')
-winPrint.hide()
-   winPrint.on("closed", ()=>{
-    winPrint = undefined;
-})   
-}
-
-
-
-function createFormulario(){
-    WinFom = new BrowserWindow({
-width:400,
-height: 715,
-resizable: false,
-        webPreferences: {
-            resizable: false,
-            nodeIntegration: true,
-            enableRemoteModule: true,
-            contextIsolation: false
-        }
-    })
-    WinFom.loadFile('src/views/formulario.html')
-    };
 
     ipcMain.handle('GetNFC', (event) =>{
         getNFC()
@@ -85,8 +91,16 @@ ipcMain.handle('GetFacturaFill', (event, obj) =>{
     getFacturaFilt(obj)
 })
 
+ipcMain.handle('UpdateCli', (event, obj, id) =>{
+    UpdateCli(obj, id)
+})
+
 ipcMain.handle('GetComprobante', (event) =>{
     getComprobante()
+})
+
+ipcMain.handle('cancelarList', (event) =>{
+    cancelarList()
 })
 
 ipcMain.handle('SendFactura', (event, objFactura, objDetalles) =>{
@@ -116,6 +130,10 @@ ipcMain.handle('GetCliente', (event, obj) =>{
     getCliente(obj)
 })
 
+ipcMain.handle('ModificarCli', (event, id) =>{
+    ModificarCli(id)
+})
+
 ipcMain.handle('addUserH', (event, obj) =>{
     addUser(obj)
 })
@@ -141,6 +159,9 @@ ipcMain.handle('Print', (event) =>{
         Print()
     })
 
+ipcMain.handle('EliminarNFC', (event, id) =>{
+    EliminarNFC(id)
+    })
 
 ipcMain.handle('OpenPrint', (event) =>{
     winPrint.show()
@@ -149,6 +170,10 @@ ipcMain.handle('OpenPrint', (event) =>{
 ipcMain.handle('login', (event, obj) => {
     validarlogin(obj);
  })
+
+function cancelarList(){
+    WinFom.hide()
+}
 
  const validarlogin = async (obj) =>  {
 
@@ -167,22 +192,66 @@ ipcMain.handle('login', (event, obj) => {
 db.end()
  }
 
+async function EliminarNFC(id){
+    const conn = await getconexion();
+console.log(id)
+    const sql = "UPDATE `NFC` SET `Borrado` = '1' WHERE `NFC`.`ID_NFC` = ?"
+    await conn.query(sql, id, (error, results, fields)  => 
+    { 
+        if (error) {
+        console.log(error);
+    }
+        getNFC()
+})
+db.end()
+ }
+
+async function ModificarCli(id){
+    const db = await getconexion()
+    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI WHERE Cliente.ID_CLI = ?'
+    await db.query(sql, id, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+open()
+        WinFom.webContents.send('EditCliente', results);
+    })
+    db.end()
+ }
+
+async function UpdateCli(obj, id){
+    const db = await getconexion()
+    const sql = 'UPDATE Cliente SET ? WHERE ID_CLI = ?'
+    await db.query(sql, [obj, id], (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        let initial = { buscador :""}
+
+    getCliente(initial)
+    WinFom.hide()
+    })
+    db.end()  
+}
+
 function crearDocs(obj){
     console.log(obj)
         // Use default printing options
-        winPrint.webContents.printToPDF({}).then(data => {
-          const pdfPath = path.join(os.homedir(), 'Escritorio', `'${obj.nombre}${obj.date}.pdf'`)
-          fs.writeFile(pdfPath, data, (error) => {
+        winPrint.webContents.printToPDF({}).then
+        (data => {
+          const pdfPath = path.join(os.homedir(), 'Desktop', `'${obj.nombre}${obj.date}.pdf'`)
+          fs.writeFile(pdfPath, data,(error) => {
             if (error) throw error
             new Notification({
                 title: "ConforpraTech",
                 body: `Wrote PDF successfully to ${pdfPath}`
             }).show()
           })
+
         }).catch(error => {
             new Notification({
                 title: "ConforpraTech",
-                body: `Failed to write PDF to ${pdfPath}: `
+                body: `Failed to write PDF to ${error} `
             }).show()
         })
       }
@@ -190,8 +259,7 @@ function crearDocs(obj){
 
 
 
-function open (){
-    createFormulario()
+function open(){
     WinFom.show()
 }
 
@@ -257,7 +325,7 @@ async function addProducto (obj){
 
 async function getComprobante() {
     const db = await getconexion()
-    const sql = 'SELECT * FROM `NFC` WHERE `Estatus` = "Nuevo" LIMIT 1';
+    const sql = 'SELECT * FROM `NFC` WHERE `Estatus` = "Nuevo" AND Borrado = 0  LIMIT 1';
     await db.query(sql, (error, results, fields) => {
         if (error) {
             console.log(error);
@@ -295,13 +363,14 @@ async function detalleSFactura(objDetalles) {
 async function addCliente (obj){
     const db = await getconexion()
     const sql = 'INSERT INTO `Cliente` ( `Nombre`, `Apellidos`, `Identidad`, `Telefono`, `Direccion`, `Email`, `ID_Tipo_CLI`) VALUES ( ?,?, ?, ?, ?, ?, ?, ?)';
-    await db.query(sql,[obj.Nombre, obj.Apellidos, obj.Identidad, obj.Telefono, obj.Direccion, obj.Email, obj.TCliente],  (error, results, fields) => {
+    await db.query(sql,[obj.Nombre, obj.Apellidos, obj.Identidad, obj.Telefono, obj.Direccion, obj.Email, obj.ID_Tipo_CLI],  (error, results, fields) => {
         if (error) {
             console.log(error);
         }
         let initial = { buscador :""}
         console.log(results)
         getCliente(initial)
+        WinFom.hide()
     })
     db.end()
 }
@@ -364,7 +433,8 @@ console.log(printer.name)
      const options = {
          silent: true,
          deviceName: printer.name,
-         pageSize: { height: 301000, width: 50000 }
+         pageSize: { height: 301000, width: 50000 },
+         footer:"Conforpra. C. Juan Sánchez Ramírez 56, Santo Domingo 10105. (809)-908-4443. conforpra.servicios@gmail.com"
      }
 
      winPrint.webContents.print(options,  (success, errorType) => {
@@ -401,7 +471,7 @@ async function getServicios(){
 
 async function getNFC(){
     const db = await getconexion()
-    const sql = 'SELECT * FROM `NFC` ORDER BY `NFC`.`Estatus` ASC'
+    const sql = 'SELECT * FROM `NFC` WHERE Borrado = 0 ORDER BY `NFC`.`Estatus` ASC '
     await db.query(sql,  (error, results, fields) => {
         if (error) {
             console.log(error);
@@ -452,5 +522,5 @@ async function deleteUsuario(obj){
 module.exports = {
     createWindow,
     createFormulario,
-createWindowPrint
+    createWindowPrint
 }

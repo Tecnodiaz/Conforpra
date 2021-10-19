@@ -35,10 +35,14 @@ ipcRenderer.on('RenderNfc',(event, results) =>{
       <td>${element.ID_NFC}</td>
       <td>${element.NFC}</td>
       <td>${element.Estatus}</td>
-    
+    <td onclick = "EliminarNFC(${element.ID_NFC})" >Eliminar</td>
     </tr>
     `
         });
         mylistNFC.innerHTML = template;
     })
-    
+
+    function EliminarNFC(id){
+        console.log(id)
+     ipcRenderer.invoke('EliminarNFC', id)  
+    }

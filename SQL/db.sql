@@ -88,3 +88,5 @@ UPDATE `NFC` SET `Estatus` = 'Usado' WHERE `NFC`.`ID_NFC` = NEW.ID_NFC;
 END
 
 DROP TRIGGER insert_check
+
+ALTER TABLE `NFC` ADD `Borrado` INT(11) NOT NULL AFTER `Estatus`;

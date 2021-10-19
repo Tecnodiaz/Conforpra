@@ -1,20 +1,24 @@
 
-let datosEncabezado
+let FacturaPrint2
 let mylistPrint
 let tablaResul
-
+let Factura2
 let BtnDescargar
 let BtnPrint
-let nom
-let dateN
 let comentarioP
+let FacturaPrint3
+
+
 document.addEventListener("DOMContentLoaded", function(){
-    datosEncabezado = document.getElementById("datosEncabezado")
+    FacturaPrint2 = document.getElementById("FacturaPrint2")
     mylistPrint =document.getElementById("mylistPrint")    
     tablaResul = document.getElementById("tablaResul")
     BtnPrint = document.getElementById("BtnPrint")
     BtnDescargar = document.getElementById("BtnDescargar")
     comentarioP = document.getElementById("comentarioP")
+    FacturaPrint3 = document.getElementById("FacturaPrint3")
+    Factura2 = document.getElementById("FacturaTitle")   
+    
     BtnDescargar.onclick = function(){
         
         const obj = {nombre : nom, date: dateN}
@@ -31,23 +35,33 @@ async function CreateDocs(obj){
 async function Print(){
     ipcRenderer.invoke('Print')
 }
-    ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
-    nom = results[0].Nombre
+
+
+ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
+    nom = results[0].NombreCliente
     dateN = results[0].Fecha
+
+    FacturaPrint3
     let template = `
-    <h1 id="Factura" class="FacturaPrint">Factura#${results[0].ID_Factura}</h1>
-    <h5 id="DirreccionPrint" class="DirreccionPrint">${results[0].Direccion}</h5>
-    <h2 id="EmpresaPrint" class="EmpresaPrint">Conforpra</h2>
-    <h5 id="FechaPrint" class="FechaPrint">${results[0].NombreCliente}</h5></br>
-    <h5 id="CorreoPrint" class="CorreoPrint">${results[0].Email}</h5>
-    <h5 class="FechaPrint">Fecha: ${results[0].Fecha}</h5>
-    <h4 class="EmpresaPrint" style="margin-right: 3%;"> ${results[0].Tipo}</h4>    
-    <h4 class="NFCPrint" style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h4>`
+    <h5 id="DirreccionPrint">${results[0].Direccion}</h5>
+    <h5 id="FechaPrint">${results[0].NombreCliente}</h5>
+    <h5 id="CorreoPrint">${results[0].Email}</h5>
+`
     
 let comen = `<a>${results[0].Comentario}</a>`
+let fac = `<h1>${results[0].ID_Factura}</h1>`
+let dataFac =`
+<h5>Rnc: 132046692</h5>
+<h5>Fecha: ${results[0].Fecha}</h5>
 
+<h4 style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h4>
+<h4 class="EmpresaPrint" style="margin-right: 3%;">${results[0].Tipo}</h4>`
+
+FacturaPrint3.innerHTML = dataFac
 comentarioP.innerHTML = comen
-datosEncabezado.innerHTML = template
+FacturaPrint2.innerHTML = template
+Factura2.innerHTML = fac
+
 
     let template2 = ""
     const list = results
