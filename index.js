@@ -3,7 +3,7 @@
 const {createWindow} = require('./main.js')
 const {app} = require('electron')
 
-//require('electron-reload')(__dirname);
+require('electron-reload')(__dirname);
 
 
 

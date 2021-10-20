@@ -368,7 +368,7 @@ text-align: right;
 .DatosCli{
   float: left;
   clear: both;
-  border: 1px solid black;
+/*  border: 1px solid black;*/
   border-radius: 13px;  
   width: 35%;
   margin-left: 3%;
@@ -377,7 +377,7 @@ text-align: right;
   }
 
 .DatosFac{
-  border: 1px solid black;
+/*  border: 1px solid black;*/
   border-radius: 13px;
   float: right;
   width: 35%;

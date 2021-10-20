@@ -1,4 +1,4 @@
-
+let renderCampos
 let clientesDataList
 let select
 let option
@@ -33,9 +33,15 @@ let Venta2
 
 let tdNew;
 let tdNewCopy
-
+let Eli
 
 document.addEventListener("DOMContentLoaded", function(){
+    renderCampos = document.getElementById("renderCampos")
+    mylistVentas = document.getElementById("mylistVentas")
+    renderCamposnew()
+    Eli = document.getElementsByName("Eli")
+
+    DatalistVenta = document.getElementById("DatalistVenta")
     Impuesto = document.getElementById("Impuesto")
     BtnCancelar = document.getElementById("BtnCancelar")
 Comentario = document.getElementById("Comentario")
@@ -44,19 +50,19 @@ Venta2 = document.getElementById("Ventas");
     SubTotal = document.getElementById("SubTotal")
     inputCliente = document.getElementById("inputCliente")
     BtnActualizar = document.getElementById("BtnActualizar")
-    mylistVentas = document.getElementById("mylistVentas")
+
     titulosVentas = document.getElementById("titulosVentas")
     clientesDataList = document.getElementById("clientesDataList")
     AgregarLinea = document.getElementById("AgregarLinea")
     tdNuevo = document.getElementById("tdNuevo")
     BtnGuardar = document.getElementById("BtnGuardar")
-    DatalistVenta = document.getElementById("DatalistVenta")
     Idnew = document.getElementsByName("Idnew")
     ArticuloId = document.getElementsByName("ArticuloId")
     CantidadTabla = document.getElementsByName("CantidadTabla")
     PrecioTabla = document.getElementsByName("PrecioTabla")
 Comentario.value = "Gracias por su compra"
-    
+
+
 defaul = `  <img src="../asset/img/etiqueta-de-venta.png" class="logoIconVentana" >  
     <h5 class="tituloPrincipal">Ventas</h5>
   <p class="titulosVentas">Cliente</p>
@@ -91,7 +97,7 @@ defaul = `  <img src="../asset/img/etiqueta-de-venta.png" class="logoIconVentana
     </thead>
     </tr>
     <tr class="">
-      <tbody id="mylistVentas">
+      <tbody id="mylistVentas0">
         <tr>
           <td id="tdNuevo">
           <input list="DatalistVenta" type="text" class="inputComunes" style="width: 100%; height: 60%" name="ArticuloId" required>
@@ -137,6 +143,7 @@ defaul = `  <img src="../asset/img/etiqueta-de-venta.png" class="logoIconVentana
   }
 BtnActualizar.onclick = function(){
         option2 = comprobanteVentas.options[comprobanteVentas.selectedIndex].value;
+        console.log(Idnew[0])
 
         let Impues
 if (Impuesto.checked == true) {
@@ -155,7 +162,7 @@ if (Impuesto.checked == true) {
         let template =""
         const list = CantidadObj
         list.forEach(element =>{
-         array.push({ s: template = `<a>${element.TotalFila}</a>`})
+         array.push(`{ s: template = <a>${element.TotalFila}</a>}`)
         });
 
         delete array[contador+1]
@@ -186,7 +193,6 @@ let r = CantidadObj.length-1
             tablaMenu.innerHTML = template
 
 }else{
-    console.log('ejecuta')
 
     TotalObj = CantidadObj
     
@@ -195,7 +201,6 @@ let r = CantidadObj.length-1
     for(i=1;i<contador;i++){
 
     a = a + CantidadObj[i].TotalFila
-    console.log(option2)
     if(Impues != 1){
         porciento = 0
 }else{
@@ -224,7 +229,7 @@ tablaMenu.innerHTML = template
     let day = date.getDate();   
     let month = date.getMonth() + 1
     let year = date.getFullYear()
-    let completa = `${year}-${month}-${day}`
+    let completa = `${year}/${month}/${day}`
     titulosVentas.value = completa
 
     renderGetProducts9()
@@ -277,8 +282,6 @@ tablaMenu.innerHTML = template
         PrecioTablaObj.push(PrecioTablaObj[i])
     };
     delete PrecioTablaObj[arti+1]
-
-
     const obj = { Cliente2: inputCliente.value, Tipo: option, Comprobante: option2, Fecha : titulosVentas.value, Articulo :  IdCamposObj, Cantidad : CantidadObj, Precio : PrecioTablaObj }
     
 console.log(option2)
@@ -320,10 +323,45 @@ async function ObtenerComprobante(){
     await ipcRenderer.invoke('GetComprobante')
 }
 
+function renderCamposnew(){
+
+    let template4 = `
+    <tr id = "mylistVentas0">
+<td id="tdNuevo">
+    <input list="DatalistVenta" type="text" class="inputComunes" style="width: 100%; height: 60%" name="ArticuloId" required>
+
+    <datalist id="DatalistVenta">
+    </datalist>
+    
+  </td>
+    
+    <td><input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="CantidadTabla" required></td>
+    
+    <td>
+     <input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="PrecioTabla" required>
+  </td>
+
+  <td Name="Idnew" >
+ </td>
+
+ <td id="BTNEL0" onclick="buscarIdt(this.id)" name ="Eli">Eliminar</td>
+ 
+ </tr>
+`
+
+    renderCampos.innerHTML = template4
+}
+
+function buscarIdt(id){
+  console.log(id)
+    const ids =  document.getElementById(`${id}`).parentNode;
+  let ne = ids.id
+    deleteClon(ne)
+}
+
 async function EnviarFactura(obj){
  
     //const obj = { Cliente: inputCliente.value, Tipo: option, Comprobante: option2, Fecha : titulosVentas.value, Articulo :  IdCamposObj, Cantidad : CantidadObj, Precio : PrecioTablaObj }
-
     let totalcomentario = Comentario.value
     let sql2 ='INSERT INTO `Factura` (`ID_NFC`, `ID_CLI`, `ID_usu`, `ID_Tipo_Factura`, `SubTotal`, `Impuesto`,`Comentario` ,`Total`, `Fecha`)'
     
@@ -337,13 +375,14 @@ async function EnviarFactura(obj){
 let sqlDetalles = sql + ` VALUES (${obj.Precio[0].Precio},${TotalObj[0].TotalFila} ,${obj.Articulo[0].IdCampos}, (select Factura.ID_Factura from Factura order by ID_Factura desc limit 1), ${obj.Cantidad[0].Cantidad})`
 
 
+
     let queryF
     let values
     let valuesTotal
     let sql3 = sqlDetalles
     for(i=1;i<contador;i++){
 
-       values = (`,(${obj.Precio[i].Precio},${TotalObj[i].TotalFila} ,${obj.Articulo[i].IdCampos}, (select Factura.ID_Factura from Factura order by ID_Factura desc limit 1),${obj.Cantidad[i].Cantidad})`
+       values = ((`${obj.Precio[i].Precio},${TotalObj[i].TotalFila} ,${obj.Articulo[i].IdCampos}, (select Factura.ID_Factura from Factura order by ID_Factura desc limit 1),${obj.Cantidad[i].Cantidad}`)
        )
     sql3 = sql3 + values
         sql3 = sql3
@@ -354,28 +393,47 @@ console.log(sql3)
 agregarFactura(sqlFactura, sql3)
 
 // await ipcRenderer.invoke('SendFactura')
-}
+}   
 async function agregarFactura (objFactura, objDetalles){
     PrintView()
     await ipcRenderer.invoke('SendFactura', objFactura, objDetalles)
 }
 
 function clonar(){
+let i = 0
 
-    const listChildren = mylistVentas.children;
-     tdNew = listChildren;
-     tdNewCopy = tdNew[0].cloneNode(true);
+let original = document.getElementById("mylistVentas" +i)
+let clone = original.cloneNode(true);
 
-    mylistVentas.appendChild(tdNewCopy);
-    contador = contador + 1
+clone.id = "mylistVentas" + ++i;
+clone.childNodes[9].id = "BTNEL" + ++i;
+
+
+
+    original.parentNode.appendChild(clone);
+
+   contador = contador + 1
+
+
 }
 
-function deleteClon(){
+    
 
-  
+function deleteClon(id){
+    
+   //  let tdSelect = Idnew[id]
+   let aarr= renderCampos.childNodes
+//para que es aarr
 
-    tdNewCopy.remove()
+   let arr = Array.from(aarr)
+   console.log(arr)
+
+let eli = arr.findIndex(element => element.id === id )
+console.log(typeof(eli))
+console.log(renderCampos[1])       
+//renderCampos[eli].remove()
     contador = contador - 1
+
 }
 
 function enviar(results, obj){
@@ -388,11 +446,6 @@ function enviar(results, obj){
 async function renderGetProducts9(){
    ipcRenderer.invoke('GetServicios')
 }
-
-
-
-
-
 ipcRenderer.on('RenderServicios',(event, results) =>{
 
     let template =""

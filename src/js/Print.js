@@ -3,11 +3,12 @@ const { ipcRenderer } = require("electron")
 let FacturaPrint2
 let mylistPrint
 let tablaResul
-let Factura
+let Factura2
 let BtnDescargar
 let BtnPrint
 let comentarioP
 let FacturaPrint3
+
 
 document.addEventListener("DOMContentLoaded", function(){
     FacturaPrint2 = document.getElementById("FacturaPrint2")
@@ -17,35 +18,56 @@ document.addEventListener("DOMContentLoaded", function(){
     BtnDescargar = document.getElementById("BtnDescargar")
     comentarioP = document.getElementById("comentarioP")
     FacturaPrint3 = document.getElementById("FacturaPrint3")
-    Factura = document.getElementById("Factura")
+    Factura2 = document.getElementById("FacturaTitle")   
+    
+    BtnDescargar.onclick = function(){
+        
+        const obj = {nombre : nom, date: dateN}
+        CreateDocs(obj)
+   }
+   BtnPrint.onclick = function(){
+    Print()
+   }
 })
 
+async function CreateDocs(obj){
+    ipcRenderer.invoke('CrearDocs', obj)
+}
+async function Print(){
+    ipcRenderer.invoke('Print')
+}
 
 
-ipcRenderer.on('RenderFacturaPrint2', (event, results) =>{
+ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
     nom = results[0].NombreCliente
     dateN = results[0].Fecha
+    console.log(results)
 
-    FacturaPrint3
     let template = `
-    <h5 id="DirreccionPrint">${results[0].Direccion}</h5>
-    <h5 id="FechaPrint">${results[0].NombreCliente}</h5>
-    <h5 id="CorreoPrint">${results[0].Email}</h5>
+
+    <h6 id="FechaPrint"><b>${results[0].ID_CLI}-${results[0].NombreCliente} ${results[0].Apellidos}</b></h6>
+    <h6>RNC/C.I: ${results[0].Identidad}</h6>
+    <h6>Telefono: ${results[0].Telefono}</h6>
+    <h6 id="DirreccionPrint">${results[0].Direccion}</h6>
+    <h6 id="CorreoPrint">${results[0].Email}</h6>
 `
     
 let comen = `<a>${results[0].Comentario}</a>`
 let fac = `<h1>Factura#${results[0].ID_Factura}</h1>`
 let dataFac =`
-<h5>Rnc: 132046692</h5>
-<h5>Fecha: ${results[0].Fecha}</h5>
+<h6>Direccion: Juan Sánchez Ramírez 56, Santo Domingo 10105.</h6>
+<h6>Fecha: ${results[0].Fecha}</h6>
+<h6>Rnc: 132046692</h6>
+<h6>Telefono: (809)-908-4443</h6>
+<h6>Correo: conforpra.servicios@gmail.com</h6>
 
-<h4 style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h4>
-<h4 class="EmpresaPrint" style="margin-right: 3%;">${results[0].Tipo}</h4>`
+<h5 style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h5>
+<h5 class="EmpresaPrint" style="margin-right: 3%;">${results[0].Tipo}</h5>`
 
 FacturaPrint3.innerHTML = dataFac
 comentarioP.innerHTML = comen
 FacturaPrint2.innerHTML = template
-Factura.innerHTML = fac
+Factura2.innerHTML = fac
 
 
     let template2 = ""

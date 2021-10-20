@@ -9,7 +9,7 @@
     "increment-version": "versiony package.json --patch && git add . && git commit -m 'new version' && git push",
     "exe": "npx electron-packager . Conforpra --platform=win32",
     "pack": "electron-builder --dir",
-    "publish": "electron-builder --win -p always"
+    "publish": "electron-builder --win"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
   "dependencies": {
     "dotenv": "^10.0.0",
     "electron-pos-printer": "^1.2.4",
+    "electron-reload": "^2.0.0-alpha.1",
     "electron-updater": "^4.3.9",
     "mysql": "^2.18.1",
     "promise-mysql": "^5.0.4",

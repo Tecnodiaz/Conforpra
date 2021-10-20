@@ -239,7 +239,7 @@ function crearDocs(obj){
         // Use default printing options
         winPrint.webContents.printToPDF({}).then
         (data => {
-          const pdfPath = path.join(os.homedir(), 'Desktop', `'${obj.nombre}${obj.date}.pdf'`)
+          const pdfPath = path.join(os.homedir(), 'Escritorio', `'${obj.nombre}${obj.date}.pdf'`)
           fs.writeFile(pdfPath, data,(error) => {
             if (error) throw error
             new Notification({
@@ -362,7 +362,7 @@ async function detalleSFactura(objDetalles) {
 
 async function addCliente (obj){
     const db = await getconexion()
-    const sql = 'INSERT INTO `Cliente` ( `Nombre`, `Apellidos`, `Identidad`, `Telefono`, `Direccion`, `Email`, `ID_Tipo_CLI`) VALUES ( ?,?, ?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO `Cliente` ( `Nombre`, `Apellidos`, `Identidad`, `Telefono`, `Direccion`, `Email`, `ID_Tipo_CLI`) VALUES ( ?,?, ?, ?, ?, ?, ?)';
     await db.query(sql,[obj.Nombre, obj.Apellidos, obj.Identidad, obj.Telefono, obj.Direccion, obj.Email, obj.ID_Tipo_CLI],  (error, results, fields) => {
         if (error) {
             console.log(error);
@@ -394,9 +394,9 @@ async function presentarDatos(obj){
 let sql =""
     if(obj[0].ID_NFC == null){
 
-    sql = 'SELECT Factura.ID_Factura, Factura.Comentario, Factura.SubTotal, Factura.Impuesto, Factura.Total, Factura.Fecha, Cliente.Nombre AS NombreCliente, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Usuario.Nombre, Tipo_Factura.Tipo, Detalles_Factura.Precio, Detalles_Factura.Total AS totalp, Detalles_Factura.Cantidad, Producto.Producto FROM Factura INNER JOIN Cliente ON Factura.ID_CLI = Cliente.ID_CLI INNER JOIN Usuario ON Factura.ID_usu = Usuario.ID_Usu INNER JOIN Tipo_Factura ON Factura.ID_Tipo_Factura = Tipo_Factura.ID_Tipo_Factura INNER JOIN Detalles_Factura ON Detalles_Factura.ID_Factura = Factura.ID_Factura INNER JOIN Producto ON Producto.ID_Producto = Detalles_Factura.ID_Producto WHERE Factura.ID_Factura = ?;'
+    sql = 'SELECT Factura.ID_Factura, Factura.Comentario, Factura.SubTotal, Factura.Impuesto, Factura.Total, Factura.Fecha, Cliente.ID_CLI , Cliente.Nombre AS NombreCliente,Cliente.Apellidos ,Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Usuario.Nombre, Tipo_Factura.Tipo, Detalles_Factura.Precio, Detalles_Factura.Total AS totalp, Detalles_Factura.Cantidad, Producto.Producto FROM Factura INNER JOIN Cliente ON Factura.ID_CLI = Cliente.ID_CLI INNER JOIN Usuario ON Factura.ID_usu = Usuario.ID_Usu INNER JOIN Tipo_Factura ON Factura.ID_Tipo_Factura = Tipo_Factura.ID_Tipo_Factura INNER JOIN Detalles_Factura ON Detalles_Factura.ID_Factura = Factura.ID_Factura INNER JOIN Producto ON Producto.ID_Producto = Detalles_Factura.ID_Producto WHERE Factura.ID_Factura = ?;'
 }else{
-    sql = 'SELECT Factura.ID_Factura, NFC.NFC, Factura.ID_NFC, Factura.Comentario, Factura.SubTotal, Factura.Impuesto, Factura.Total, Factura.Fecha, Cliente.Nombre AS NombreCliente, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Usuario.Nombre, Tipo_Factura.Tipo, Detalles_Factura.Precio, Detalles_Factura.Total AS totalp, Detalles_Factura.Cantidad, Producto.Producto FROM Factura INNER JOIN Cliente ON Factura.ID_CLI = Cliente.ID_CLI INNER JOIN Usuario ON Factura.ID_usu = Usuario.ID_Usu INNER JOIN Tipo_Factura ON Factura.ID_Tipo_Factura = Tipo_Factura.ID_Tipo_Factura INNER JOIN Detalles_Factura ON Detalles_Factura.ID_Factura = Factura.ID_Factura INNER JOIN Producto ON Producto.ID_Producto = Detalles_Factura.ID_Producto INNER JOIN NFC ON NFC.ID_NFC = Factura.ID_NFC WHERE Factura.ID_Factura = ?;'
+    sql = 'SELECT Factura.ID_Factura, NFC.NFC, Factura.ID_NFC, Factura.Comentario, Factura.SubTotal, Factura.Impuesto, Factura.Total, Factura.Fecha, Cliente.ID_CLI ,Cliente.Nombre AS NombreCliente,Cliente.Apellidos ,Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Usuario.Nombre, Tipo_Factura.Tipo, Detalles_Factura.Precio, Detalles_Factura.Total AS totalp, Detalles_Factura.Cantidad, Producto.Producto FROM Factura INNER JOIN Cliente ON Factura.ID_CLI = Cliente.ID_CLI INNER JOIN Usuario ON Factura.ID_usu = Usuario.ID_Usu INNER JOIN Tipo_Factura ON Factura.ID_Tipo_Factura = Tipo_Factura.ID_Tipo_Factura INNER JOIN Detalles_Factura ON Detalles_Factura.ID_Factura = Factura.ID_Factura INNER JOIN Producto ON Producto.ID_Producto = Detalles_Factura.ID_Producto INNER JOIN NFC ON NFC.ID_NFC = Factura.ID_NFC WHERE Factura.ID_Factura = ?;'
 }
 
 await db.query(sql,[obj[0].ID_Factura],  (error, results, fields) => {
