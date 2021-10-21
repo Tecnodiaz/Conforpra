@@ -1,4 +1,3 @@
-
 let FacturaPrint2
 let mylistPrint
 let tablaResul

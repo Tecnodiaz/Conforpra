@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function(){
 
     Hide.onclick = function(){
         ipcRenderer.invoke("cancelarList")    
+        editingStatus = false
     }
 
     addCliente.onclick = function(){
@@ -40,6 +41,7 @@ if(editingStatus == false){
         ipcRenderer.invoke("addCliente", obj)
     }else {
         ipcRenderer.invoke("UpdateCli", obj, editProductId)
+        editingStatus = false
     }
     
     

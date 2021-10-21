@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function(){
     Impuesto = document.getElementById("Impuesto")
     BtnCancelar = document.getElementById("BtnCancelar")
 Comentario = document.getElementById("Comentario")
-Venta2 = document.getElementById("Ventas");
+//document.getElementById("Ventas");
     EliminarLinea = document.getElementById("EliminarLinea")
     SubTotal = document.getElementById("SubTotal")
     inputCliente = document.getElementById("inputCliente")
@@ -60,151 +60,80 @@ Venta2 = document.getElementById("Ventas");
     ArticuloId = document.getElementsByName("ArticuloId")
     CantidadTabla = document.getElementsByName("CantidadTabla")
     PrecioTabla = document.getElementsByName("PrecioTabla")
-Comentario.value = "Gracias por su compra"
+    Comentario.value = "Gracias por su compra"
 
+console.log(tdNuevo)
 
-defaul = `  <img src="../asset/img/etiqueta-de-venta.png" class="logoIconVentana" >  
-    <h5 class="tituloPrincipal">Ventas</h5>
-  <p class="titulosVentas">Cliente</p>
-  <input list="clientesDataList" type="text" class="inputComunes" id="inputCliente" required>
-  <datalist id="clientesDataList">
-  </datalist>
-  
-  <select class="com" id="Cotizacion" name="Cotizacion">
-    <option value="2">Cotizacion</option>
-    <option value="1">Venta</option>
-  </select>
-  <input class="com" type="checkbox" id="Impuesto" value="1">
-  
-  
-  <p class="titulosVentas">Fecha</p>
-  
-  <input type="text" class="inputComunes" id="titulosVentas" required>
-  
-  <select class="com" id="comprobanteVentas">
-    <option value="NULL">Sin Comprobante</option>
-    <option value="2">Comprobante</option>
-  </select>
-  
-  
-  <table class="styled-table">
-    <tr>
-      <thead>
-      <th>Producto</th>
-      <th>Cantidad</th>
-      <th>Precio</th>
-      <th>Total Precio</th>
-    </thead>
-    </tr>
-    <tr class="">
-      <tbody id="mylistVentas0">
-        <tr>
-          <td id="tdNuevo">
-          <input list="DatalistVenta" type="text" class="inputComunes" style="width: 100%; height: 60%" name="ArticuloId" required>
-  
-          <datalist id="DatalistVenta">
-          </datalist>
-          
-        </td>
-          
-          <td><input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="CantidadTabla" required></td>
-          
-          <td>
-           <input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="PrecioTabla" required>
-        </td>
-  
-        <td Name="Idnew" >
-       </td>
-       
-        </tr>
-       
-  </tbody>
-    </tr>
-  </table>
-  
-  
-  <button class="BtnNewB" id="AgregarLinea">Agregar Producto</button>
-  
-  <button class="BtnNewB" id="EliminarLinea">Eliminar</button>
-  
-  <textarea class="BtnNewB" id="Comentario" cols="30" rows="10" style="width: 20%; height: 90px; margin-top: 30px;"></textarea>
-  <div class="tablaMenu" id="tablaMenu">
-  </div>
-  <div class="BarBtn">
-  <button class="BtnAction" style="background: #FF3C3C;" id="BtnCancelar">Cancelar</button>
-  <button class="BtnAction" style="background: #059BAF;" id="BtnGuardar">Guardar</button>
-  <button class="BtnAction" style="background: #FFF730;" id="BtnActualizar">Actualizar</button>
-  </div>
-  `
   BtnCancelar.onclick = function(){
-    Venta2.innerHTML = defaul
     Venta.style.display = "none"
     Factura.style.display = "block"      
   }
-BtnActualizar.onclick = function(){
-        option2 = comprobanteVentas.options[comprobanteVentas.selectedIndex].value;
-        console.log(Idnew[0])
 
-        let Impues
+  BtnActualizar.onclick = function(){
+    option2 = comprobanteVentas.options[comprobanteVentas.selectedIndex].value;
+
+    let Impues
 if (Impuesto.checked == true) {
-    Impues = Impuesto.value
+Impues = Impuesto.value
 }else{
-    Impues = 0
+Impues = 0
 }
-        let CantidadObj = []
+    let CantidadObj = []
 
-        for(i=0;i<contador;i++){
-            CantidadObj[i] = {TotalFila : CantidadTabla[i].value * PrecioTabla[i].value};
-            CantidadObj.push(CantidadObj[i])
-        };
-        delete CantidadObj[contador]
-        let array =[]
-        let template =""
-        const list = CantidadObj
-        list.forEach(element =>{
-         array.push(`{ s: template = <a>${element.TotalFila}</a>}`)
-        });
+    for(i=0;i<contador;i++){
+        CantidadObj[i] = {TotalFila : CantidadTabla[i].value * PrecioTabla[i].value};
+        CantidadObj.push(CantidadObj[i])
+    };
+    delete CantidadObj[contador]
+    let array =[]
+    let template =""
+    const list = CantidadObj
+    list.forEach(element =>{
+     array.push({ s: template = `<a>${element.TotalFila}</a>`})
+    });
 
-        delete array[contador+1]
-        for(i=0;i<contador;i++){
-            Idnew[i].innerHTML = array[i].s;
-        };
+    delete array[contador+1]
+    for(i=0;i<contador;i++){
+        Idnew[i].innerHTML = array[i].s;
+    };
 let r = CantidadObj.length-1
 
-        if(r == 1){   
-            TotalObj = CantidadObj
-            a = CantidadObj[0].TotalFila
-            
-            if(Impues != 1){
-                porciento = 0
-            }else{
-                porciento = CantidadObj[0].TotalFila *0.18 
+    if(r == 1){   
+        TotalObj = CantidadObj
+        a = CantidadObj[0].TotalFila
+        
+        if(Impues != 1){
+            porciento = 0
+        }else{
+            porciento = CantidadObj[0].TotalFila *0.18 
 
-            }
+        }
 
-            let template = `<a class="subTil" id="SubTotal">Sub Total</a> <a class="subRes">${a}</a>
-            <br>
-            <a class="subTil">Impuestos</a> <a class="subRes">${porciento}</a>
-            <br>
-            <a class="subTil">Total</a> <a class="subRes" style="font-size: 30px;">${ a + porciento}</a>
-            <br>
-            `
+        let template = `<a class="subTil" id="SubTotal">Sub Total</a> <a class="subRes">${a}</a>
+        <br>
+        <a class="subTil">Impuestos</a> <a class="subRes">${porciento}</a>
+        <br>
+        <a class="subTil">Total</a> <a class="subRes" style="font-size: 30px;">${ a + porciento}</a>
+        <br>
+        `
 
-            tablaMenu.innerHTML = template
+        tablaMenu.innerHTML = template
 
 }else{
+console.log('ejecuta')
 
-    TotalObj = CantidadObj
-    
-    a = CantidadObj[0].TotalFila;         
-   
-    for(i=1;i<contador;i++){
+TotalObj = CantidadObj
 
-    a = a + CantidadObj[i].TotalFila
-    if(Impues != 1){
-        porciento = 0
+a = CantidadObj[0].TotalFila;         
+
+for(i=1;i<contador;i++){
+
+a = a + CantidadObj[i].TotalFila
+console.log(option2)
+if(Impues != 1){
+    porciento = 0
 }else{
-    porciento = a*0.18 
+porciento = a*0.18 
 
 }
 };
@@ -221,9 +150,8 @@ tablaMenu.innerHTML = template
 
 }
 /**
- */
+*/
 }
-
 
     let date = new Date()
     let day = date.getDate();   
@@ -298,7 +226,7 @@ console.log(option2)
 
     }else{
         EnviarFactura(obj)
-        Venta2.innerHTML = defaul
+     
     }
 
 
@@ -341,7 +269,8 @@ function renderCamposnew(){
      <input type="number" type="text" class="inputComunes" style="width: 60%; height: 50%; margin-left: 18%" name="PrecioTabla" required>
   </td>
 
-  <td Name="Idnew" >
+  <td>
+  <a name="Idnew" ><a>
  </td>
 
  <td id="BTNEL0" onclick="buscarIdt(this.id)" name ="Eli">Eliminar</td>
@@ -353,7 +282,6 @@ function renderCamposnew(){
 }
 
 function buscarIdt(id){
-  console.log(id)
     const ids =  document.getElementById(`${id}`).parentNode;
   let ne = ids.id
     deleteClon(ne)
@@ -398,15 +326,15 @@ async function agregarFactura (objFactura, objDetalles){
     PrintView()
     await ipcRenderer.invoke('SendFactura', objFactura, objDetalles)
 }
-
-function clonar(){
 let i = 0
+function clonar(){
+let r = 0
 
-let original = document.getElementById("mylistVentas" +i)
+let original = document.getElementById("mylistVentas" +r)
 let clone = original.cloneNode(true);
-
-clone.id = "mylistVentas" + ++i;
-clone.childNodes[9].id = "BTNEL" + ++i;
+i++
+clone.id = "mylistVentas" + i;
+clone.childNodes[9].id = "BTNEL" + i;
 
 
 
@@ -420,7 +348,10 @@ clone.childNodes[9].id = "BTNEL" + ++i;
     
 
 function deleteClon(id){
-    
+let elEliminado = document.getElementById(`${id}`)    
+
+elEliminado.remove()
+/*
    //  let tdSelect = Idnew[id]
    let aarr= renderCampos.childNodes
 //para que es aarr
@@ -429,11 +360,11 @@ function deleteClon(id){
    console.log(arr)
 
 let eli = arr.findIndex(element => element.id === id )
-console.log(typeof(eli))
-console.log(renderCampos[1])       
-//renderCampos[eli].remove()
-    contador = contador - 1
 
+console.log(arr)       
+//renderCampos[eli].remove()
+*/
+contador = contador - 1
 }
 
 function enviar(results, obj){

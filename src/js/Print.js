@@ -4,8 +4,6 @@ let FacturaPrint2
 let mylistPrint
 let tablaResul
 let Factura2
-let BtnDescargar
-let BtnPrint
 let comentarioP
 let FacturaPrint3
 
@@ -14,31 +12,12 @@ document.addEventListener("DOMContentLoaded", function(){
     FacturaPrint2 = document.getElementById("FacturaPrint2")
     mylistPrint =document.getElementById("mylistPrint")    
     tablaResul = document.getElementById("tablaResul")
-    BtnPrint = document.getElementById("BtnPrint")
-    BtnDescargar = document.getElementById("BtnDescargar")
     comentarioP = document.getElementById("comentarioP")
     FacturaPrint3 = document.getElementById("FacturaPrint3")
     Factura2 = document.getElementById("FacturaTitle")   
     
-    BtnDescargar.onclick = function(){
-        
-        const obj = {nombre : nom, date: dateN}
-        CreateDocs(obj)
-   }
-   BtnPrint.onclick = function(){
-    Print()
-   }
 })
-
-async function CreateDocs(obj){
-    ipcRenderer.invoke('CrearDocs', obj)
-}
-async function Print(){
-    ipcRenderer.invoke('Print')
-}
-
-
-ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
+ipcRenderer.on('RenderFacturaPrint2', (event, results) =>{
     nom = results[0].NombreCliente
     dateN = results[0].Fecha
     console.log(results)

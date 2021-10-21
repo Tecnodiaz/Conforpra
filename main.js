@@ -28,6 +28,10 @@ winPrint.on("closed", ()=>{
     winPrint = undefined;
 })   
 }
+function cancelarList(){
+    WinFom.hide()
+}
+
 
 function createFormulario(){
     WinFom = new BrowserWindow({
@@ -40,10 +44,9 @@ webPreferences: {
             contextIsolation: false
         }
     })
-//    WinFom.setMenu(null)
+   WinFom.setMenu(null)
 
     WinFom.loadFile('src/views/formulario.html')
-//   WinFom.hide()
 };
 
 
@@ -171,9 +174,6 @@ ipcMain.handle('login', (event, obj) => {
     validarlogin(obj);
  })
 
-function cancelarList(){
-    WinFom.hide()
-}
 
  const validarlogin = async (obj) =>  {
 
@@ -239,7 +239,7 @@ function crearDocs(obj){
         // Use default printing options
         winPrint.webContents.printToPDF({}).then
         (data => {
-          const pdfPath = path.join(os.homedir(), 'Escritorio', `'${obj.nombre}${obj.date}.pdf'`)
+          const pdfPath = path.join(os.homedir(), 'Desktop', `'${obj.nombre}${obj.date}.pdf'`)
           fs.writeFile(pdfPath, data,(error) => {
             if (error) throw error
             new Notification({
