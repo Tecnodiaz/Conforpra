@@ -61,15 +61,19 @@ Comentario = document.getElementById("Comentario")
     CantidadTabla = document.getElementsByName("CantidadTabla")
     PrecioTabla = document.getElementsByName("PrecioTabla")
     Comentario.value = "Gracias por su compra"
+    
+
+
 
 console.log(tdNuevo)
 
   BtnCancelar.onclick = function(){
+      LimpiarCamposVentas()
     Venta.style.display = "none"
     Factura.style.display = "block"      
-  }
+}
 
-  BtnActualizar.onclick = function(){
+BtnActualizar.onclick = function(){
     option2 = comprobanteVentas.options[comprobanteVentas.selectedIndex].value;
 
     let Impues
@@ -284,7 +288,15 @@ function renderCamposnew(){
 function buscarIdt(id){
     const ids =  document.getElementById(`${id}`).parentNode;
   let ne = ids.id
+  console.log( ids)
     deleteClon(ne)
+}
+
+function buscarIdtClean(id){
+    const ids =  document.getElementById(`${id}`).parentNode;
+  let ne = ids.id
+  console.log( ids)
+    deleteClonClean(ne)
 }
 
 async function EnviarFactura(obj){
@@ -310,7 +322,7 @@ let sqlDetalles = sql + ` VALUES (${obj.Precio[0].Precio},${TotalObj[0].TotalFil
     let sql3 = sqlDetalles
     for(i=1;i<contador;i++){
 
-       values = ((`${obj.Precio[i].Precio},${TotalObj[i].TotalFila} ,${obj.Articulo[i].IdCampos}, (select Factura.ID_Factura from Factura order by ID_Factura desc limit 1),${obj.Cantidad[i].Cantidad}`)
+       values = (`,(${obj.Precio[i].Precio},${TotalObj[i].TotalFila} ,${obj.Articulo[i].IdCampos}, (select Factura.ID_Factura from Factura order by ID_Factura desc limit 1),${obj.Cantidad[i].Cantidad})`
        )
     sql3 = sql3 + values
         sql3 = sql3
@@ -326,7 +338,9 @@ async function agregarFactura (objFactura, objDetalles){
     PrintView()
     await ipcRenderer.invoke('SendFactura', objFactura, objDetalles)
 }
+
 let i = 0
+
 function clonar(){
 let r = 0
 
@@ -349,8 +363,11 @@ clone.childNodes[9].id = "BTNEL" + i;
 
 function deleteClon(id){
 let elEliminado = document.getElementById(`${id}`)    
-
-elEliminado.remove()
+if (id === 'mylistVentas0'){
+    alert("No puede eliminar el primero")
+}else{
+    elEliminado.remove()
+}
 /*
    //  let tdSelect = Idnew[id]
    let aarr= renderCampos.childNodes
@@ -366,6 +383,29 @@ console.log(arr)
 */
 contador = contador - 1
 }
+
+
+function deleteClonClean(id){
+    let elEliminado = document.getElementById(`${id}`)    
+    if (id === 'mylistVentas0'){
+        alert("No puede eliminar el primero")
+    }else{
+        elEliminado.remove()
+    }
+    /*
+       //  let tdSelect = Idnew[id]
+       let aarr= renderCampos.childNodes
+    //para que es aarr
+    
+       let arr = Array.from(aarr)
+       console.log(arr)
+    
+    let eli = arr.findIndex(element => element.id === id )
+    
+    console.log(arr)       
+    //renderCampos[eli].remove()
+    */
+    }
 
 function enviar(results, obj){
 
@@ -393,6 +433,7 @@ function visible(valor, ocultado){
 
     if( valor == 2){
         ocultado.style.display = "none"
+        comprobanteVentas.value="NULL"
     }else{
         ocultado.style.display = "block"
     }
@@ -410,3 +451,22 @@ ipcRenderer.on('RenderCliente', (event, results) =>{
 
     clientesDataList.innerHTML = template;
 })
+
+function LimpiarCamposVentas(){
+    inputCliente.value=""
+    select.value='2'
+    option = select.options[select.selectedIndex].value;
+    visible( option, comprobanteVentas)
+    Impuesto.checked = false
+
+    if(contador > 1 ){
+        let i = document.getElementsByName("Eli")
+        
+for (let index = 1; index < contador; index++) {
+    let w = i[1].id
+            console.log(w)
+            buscarIdtClean(w)
+        }/*}else{
+    console.log("No pasa nada")*/
+}
+}

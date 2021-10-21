@@ -22,7 +22,6 @@ function createWindowPrint(){
            contextIsolation: false
        }
    })
-//winPrint.hide()
    winPrint.loadFile('src/views/Login.html')
 winPrint.on("closed", ()=>{
     winPrint = undefined;
@@ -36,7 +35,7 @@ function cancelarList(){
 function createFormulario(){
     WinFom = new BrowserWindow({
 width:400,
-height: 715,
+height: 800,
 resizable: false,
 webPreferences: {
             nodeIntegration: true,
@@ -52,7 +51,8 @@ webPreferences: {
 
 function createWindow(){
  win = new BrowserWindow({
-
+width:1400,
+height: 800,
     webPreferences: {
         resizable: false,
         nodeIntegration: true,
@@ -66,8 +66,8 @@ createFormulario()
 win.loadFile('src/views/Facturas.html')
 //win.setMenu(null)
 
-//winPrint.hide()
-//WinFom.hide()
+winPrint.hide()
+WinFom.hide()
 
 win.on("closed", ()=>{
     winPrint.close()
@@ -166,6 +166,10 @@ ipcMain.handle('EliminarNFC', (event, id) =>{
     EliminarNFC(id)
     })
 
+    ipcMain.handle('EliminarProducto', (event, id) =>{
+        EliminarProductos(id)
+    })
+
 ipcMain.handle('OpenPrint', (event) =>{
     winPrint.show()
  })
@@ -202,6 +206,21 @@ console.log(id)
         console.log(error);
     }
         getNFC()
+})
+db.end()
+ }
+
+
+ async function EliminarProductos(id){
+    const conn = await getconexion();
+console.log(id)
+    const sql = "UPDATE `Producto` SET `Borrado` = '1' WHERE `Producto`.`ID_Producto` = ?"
+    await conn.query(sql, id, (error, results, fields)  => 
+    { 
+        if (error) {
+        console.log(error);
+    }
+        getServicios()
 })
 db.end()
  }
@@ -244,7 +263,7 @@ function crearDocs(obj){
             if (error) throw error
             new Notification({
                 title: "ConforpraTech",
-                body: `Wrote PDF successfully to ${pdfPath}`
+                body: `Se descargo su archivo pdf en: ${pdfPath}`
             }).show()
           })
 
@@ -459,12 +478,13 @@ async function addNFC (obj){
 
 async function getServicios(){
     const db = await getconexion()
-    const sql = 'SELECT Producto.ID_Producto ,Producto.Producto, Producto.Descripcion, Producto.Precio, Tipo_Producto.Nombre FROM Producto INNER JOIN Tipo_Producto ON Producto.ID_Tipo_Producto = Tipo_Producto.ID_Tipo_Producto'
+    const sql = 'SELECT Producto.ID_Producto ,Producto.Producto, Producto.Descripcion, Producto.Precio, Tipo_Producto.Nombre FROM Producto INNER JOIN Tipo_Producto ON Producto.ID_Tipo_Producto = Tipo_Producto.ID_Tipo_Producto WHERE Borrado = 0;'
     await db.query(sql,  (error, results, fields) => {
             if (error) {
                 console.log(error);
             }
         win.webContents.send('RenderServicios', results);
+        console.log(results)
         })
     db.end()
 }

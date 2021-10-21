@@ -13,13 +13,22 @@
     <div class="encabezadoForm" style="width: 100%; margin-right: 0px; margin-top: 0px;" >
         <h5>Formulario</h5>
       </div>
+
+        
+    </center>
       
       <div class="formulario" style="width: 100%; margin-right: 0; margin-bottom: 0px;" >
-      <p>Nombre</p>
+        <p>Tipo De Cliente</p>
+        <center>
+          <select id="TCliente" style="width: 60%; height: 30px; text-align: center;">
+            <option value="1">Empresa</option>
+            <option value="2">Estudiante</option>
+          </select>
+        <p>Nombre</p>
         <center>
       <input type="text" class="inputNew" id="Nombre">
       </center>
-      <p>Apellidos</p>
+      <p id="ApeLabel" >Apellidos</p>
       <center>
     <input type="text" class="inputNew" id="Apellidos">
     </center>
@@ -39,14 +48,6 @@
         <center>
       <input type="text" class="inputNew" id="Email">
       </center>
-      <p>Tipo De Cliente</p>
-      <center>
-        <select id="TCliente" style="width: 60%; height: 30px; text-align: center;">
-          <option value="1">Empresa</option>
-          <option value="2">Estudiante</option>
-        </select>
-        
-    </center>
       <center>
     
       <button class="BtnAgregar" id="addCliente">

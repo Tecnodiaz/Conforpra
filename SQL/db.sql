@@ -90,3 +90,4 @@ END
 DROP TRIGGER insert_check
 
 ALTER TABLE `NFC` ADD `Borrado` INT(11) NOT NULL AFTER `Estatus`;
+ALTER TABLE `Producto` ADD `Borrado` INT NOT NULL DEFAULT '0' AFTER `ID_Tipo_Producto`;

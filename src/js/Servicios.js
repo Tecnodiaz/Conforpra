@@ -34,6 +34,9 @@ function limpiarServicios () {
     DescripcionProduc.value = ""
     PrecioProduc.value =""
 }
+function EliminarProductos(id){
+    ipcRenderer.invoke('EliminarProducto', id)
+}
 
 async function renderGetProducts6(){
     ipcRenderer.invoke('GetServicios')
@@ -45,13 +48,15 @@ ipcRenderer.on('RenderServicios',(event, results) =>{
     list.forEach(element =>{
         template +=`
         
+ 
         <tr>
-  <td>Eliminar</td>
+        <td>${element.ID_Producto}</td>
   <td>${element.Producto}</td>
   <td>${element.Descripcion}</td>
   <td>$${element.Precio}</td>
   <td>${element.Nombre}</td>
-</tr>
+  <td onclick = "EliminarProductos(${element.ID_Producto})" >Eliminar</td>
+  </tr>
 `
     });
     mylistServicios.innerHTML = template;
