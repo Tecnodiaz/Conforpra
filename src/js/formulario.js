@@ -14,6 +14,8 @@ let Hide
 let estul
 let editingStatus = false;
 let editProductId;
+let cedula
+let RNC
 
 document.addEventListener("DOMContentLoaded", function(){
     Hide = document.getElementById("Hide")
@@ -26,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function(){
     TCliente = document.getElementById("TCliente")
     addCliente = document.getElementById("addCliente")
     ApeLabel = document.getElementById("ApeLabel")
+    cedula = document.getElementById("cedula")
+    RNC = document.getElementById("RNC")
 
     option = TCliente.options[TCliente.selectedIndex].value;
     visible(option, Apellidos)
@@ -47,7 +51,6 @@ TCliente.onclick = function(){
         const obj = {Nombre: Nombre.value, Apellidos: Apellidos.value, Identidad: Identidad.value, Telefono: Telefono.value, Direccion: Direccion.value, Email: Email.value, ID_Tipo_CLI: valorTCliente}
 
 if(editingStatus == false){
-
         ipcRenderer.invoke("addCliente", obj)
     }else {
         ipcRenderer.invoke("UpdateCli", obj, editProductId)
@@ -80,9 +83,14 @@ function visible(valor, ocultado){
         ocultado.style.display = "none"
         ApeLabel.style.display = "none"
         ocultado.value = ""
+        RNC.style.display = "block"
+        cedula.style.display = "none"
     }else{
         ocultado.style.display = "block"
         ApeLabel.style.display = "block"
+        RNC.style.display = "none"
+        cedula.style.display = "block"
+
     }
 
 }
@@ -96,4 +104,3 @@ function limpiarCliente (){
     Direccion.value =""
     Email.value =""
 }
-

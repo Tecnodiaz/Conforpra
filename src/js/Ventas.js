@@ -24,7 +24,6 @@ let Impuesto
 
 let BtnActualizar
 let Idnew
-let EliminarLinea
 
 let a;
 let porciento
@@ -46,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function(){
     BtnCancelar = document.getElementById("BtnCancelar")
 Comentario = document.getElementById("Comentario")
 //document.getElementById("Ventas");
-    EliminarLinea = document.getElementById("EliminarLinea")
     SubTotal = document.getElementById("SubTotal")
     inputCliente = document.getElementById("inputCliente")
     BtnActualizar = document.getElementById("BtnActualizar")
@@ -245,10 +243,6 @@ select.onclick = function(){
 AgregarLinea.onclick = function(){
 clonar()
 }
-EliminarLinea.onclick = function(){
-    deleteClon()
-}
-
 })
 
 async function ObtenerComprobante(){

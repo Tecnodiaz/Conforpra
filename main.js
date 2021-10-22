@@ -34,9 +34,10 @@ function cancelarList(){
 
 function createFormulario(){
     WinFom = new BrowserWindow({
-width:400,
-height: 800,
+width:430,
+height: 900,
 resizable: false,
+frame: false,
 webPreferences: {
             nodeIntegration: true,
             enableRemoteModule: true,
@@ -51,8 +52,8 @@ webPreferences: {
 
 function createWindow(){
  win = new BrowserWindow({
-width:1400,
-height: 800,
+width:1600,
+height: 900,
     webPreferences: {
         resizable: false,
         nodeIntegration: true,

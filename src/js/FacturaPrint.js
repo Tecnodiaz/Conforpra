@@ -53,7 +53,7 @@ ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
 let comen = `<a>${results[0].Comentario}</a>`
 let fac = `<h1>Factura#${results[0].ID_Factura}</h1>`
 let dataFac =`
-<h6>Direccion: Juan Sánchez Ramírez 56, Santo Domingo 10105.</h6>
+<h6>Direccion: Juan Sánchez Ramírez 56, Santo Domingo Zona Universitaria.</h6>
 <h6>Fecha: ${results[0].Fecha}</h6>
 <h6>Rnc: 132046692</h6>
 <h6>Telefono: (809)-908-4443</h6>
