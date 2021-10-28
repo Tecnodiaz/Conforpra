@@ -68,8 +68,8 @@ createFormulario()
 win.loadFile('src/views/Facturas.html')
 //win.setMenu(null)
 
-winPrint.hide()
-WinFom.hide()
+//winPrint.hide()
+//WinFom.hide()
 
 win.on("closed", ()=>{
     winPrint.close()
@@ -213,16 +213,16 @@ db.end()
  }
 
  async function addNFC (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `NFC` (`NFC`, `Estatus`) VALUES (?, ?)';
-    await db.query(sql,[obj.Nfc, obj.Estatus],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        console.log(results)
-        getNFC()
-    })
-    db.end()
+    try {
+         await axios.post('http://localhost:3000/api/nfc',
+        {NFC:obj.Nfc,Estatus:obj.Estatus} );
+        
+       
+    } catch (err) {
+        
+        console.error(err);
+    }
+    getNFC()
 }
 
 async  function getNFC(){
@@ -272,15 +272,17 @@ function open(){
 
 
 async function addProducto (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `Producto` (`Producto`, `Descripcion`, `Precio`, `ID_Tipo_Producto`) VALUES (?, ?, ?, ?)';
-    await db.query(sql,[obj.Nombre, obj.DescripcionProduc, obj.Precio, obj.TipoProduc],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        getServicios()
-    })
-    db.end()
+    try {
+         await axios.post('http://localhost:3000/api/productos',
+        {Producto:obj.Nombre, Descripcion:obj.DescripcionProduc,Precio:obj.precio,ID_Tipo_Producto:obj.TipoProduc} );
+       
+      
+    } catch (err) {
+        
+        console.error(err);
+    }
+    getServicios()
+        
 }
 
 async function getServicios(){
@@ -428,26 +430,25 @@ async function presentarDatos(obj){
 }
 
 }
-
-async function addUser (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `Usuario` (`Nom_Usuario`, `Contraseña`, `Nombre`, `Nivel`) VALUES (?, ?, ?, 2)';
-    await db.query(sql,[ obj.User, obj.Contraseña, obj.Nombre],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        console.log(results)
-        getUsuario()
-
-    })
-    db.end()
-}
+const addUser = async (obj) => {
+    try {
+        const resp = await axios.post('http://localhost:3000/api/users',
+        {User:obj.User,Contraseña:obj.Contraseña,Nombre:obj.Nombre} );
+      
+       
+    } catch (err) {
+        
+        console.error(err);
+    }
+    getUsuario()
+   
+};
 
 async function getUsuario(){
 
     try{
         const response = await axios.get("http://localhost:3000/api/users")
-    console.log(response.data)
+    console.log('users')
   win.webContents.send('RenderUsuario',response.data)    
     }catch(error){
         console.log(error)
@@ -493,24 +494,30 @@ console.log(printer.name)
 
 
 async function addCliente (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `Cliente` ( `Nombre`, `Apellidos`, `Identidad`, `Telefono`, `Direccion`, `Email`, `ID_Tipo_CLI`) VALUES ( ?,?, ?, ?, ?, ?, ?)';
-    await db.query(sql,[obj.Nombre, obj.Apellidos, obj.Identidad, obj.Telefono, obj.Direccion, obj.Email, obj.ID_Tipo_CLI],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
-        console.log(results)
-        getCliente(initial)
-        WinFom.hide()
-    })
-    db.end()
+    try {
+        const resp = await axios.post('http://localhost:3000/api/clientes',
+        {Nombre:obj.Nombre,Apellidos:obj.Apellidos,Identidad:obj.Identidad,Telefono:obj.Telefono,Direccion:obj.Direccion,Email:obj.Email,ID_Tipo_CLI:obj.ID_Tipo_CLI} );
+       ;
+  
+      
+    } catch (err) {
+        
+        console.error(err);
+    }
+    let initial = { buscador :""}
+    
+    getCliente(initial)
+    WinFom.hide()
+   
 }
 
 async function getCliente(obj){
+    console.log('soy yo')
     try{
+        
         const response = await axios.get("http://localhost:3000/api/clientes")
-    console.log(response.data)
+        console.log('trayendo')
+    
     win.webContents.send('RenderCliente', response.data, obj)    
     }catch(error){
         console.log(error)
