@@ -88,6 +88,6 @@ UPDATE `NFC` SET `Estatus` = 'Usado' WHERE `NFC`.`ID_NFC` = NEW.ID_NFC;
 END
 
 DROP TRIGGER insert_check
-
+ALTER TABLE `Usuario` ADD `ID_Usu_Borrado` INT NOT NULL DEFAULT '0' AFTER `Nivel`;
 ALTER TABLE `NFC` ADD `Borrado` INT(11) NOT NULL AFTER `Estatus`;
 ALTER TABLE `Producto` ADD `Borrado` INT NOT NULL DEFAULT '0' AFTER `ID_Tipo_Producto`;

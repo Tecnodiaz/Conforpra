@@ -23,6 +23,7 @@
     "versiony": "^2.0.1"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "dotenv": "^10.0.0",
     "electron-pos-printer": "^1.2.4",
     "electron-reload": "^2.0.0-alpha.1",

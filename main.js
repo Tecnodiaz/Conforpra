@@ -6,7 +6,8 @@ const BrowserWindow = electron.BrowserWindow
 const ipcMain = electron.ipcMain
 const fs = require('fs')
 const os = require('os')
-const path = require('path')
+const path = require('path');
+const { default: axios } = require('axios');
 const shell = electron.shell
 
 let WinFom;
@@ -224,16 +225,15 @@ db.end()
     db.end()
 }
 
- async function getNFC(){
-    const db = await getconexion()
-    const sql = 'SELECT * FROM `NFC` WHERE Borrado = 0 ORDER BY `NFC`.`Estatus` ASC '
-    await db.query(sql,  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        win.webContents.send('RenderNfc', results);
-})
-    db.end()
+async  function getNFC(){
+try{
+    const response = await axios.get("http://localhost:3000/api/nfc")
+console.log(response.data)
+    win.webContents.send('RenderNfc', response.data);
+
+}catch(error){
+    console.log(error)
+}
 }
 
 
@@ -284,16 +284,16 @@ async function addProducto (obj){
 }
 
 async function getServicios(){
-    const db = await getconexion()
-    const sql = 'SELECT Producto.ID_Producto ,Producto.Producto, Producto.Descripcion, Producto.Precio, Tipo_Producto.Nombre FROM Producto INNER JOIN Tipo_Producto ON Producto.ID_Tipo_Producto = Tipo_Producto.ID_Tipo_Producto WHERE Borrado = 0;'
-    await db.query(sql,  (error, results, fields) => {
-            if (error) {
-                console.log(error);
-            }
-        win.webContents.send('RenderServicios', results);
-        console.log(results)
-        })
-    db.end()
+
+    try{
+        const response = await axios.get("http://localhost:3000/api/servicios")
+    console.log(response.data)
+    win.webContents.send('RenderServicios', response.data);    
+    
+}catch(error){
+        console.log(error)
+    }
+
 }
 
 
@@ -313,15 +313,15 @@ db.end()
 
 
 async function getComprobante() {
-    const db = await getconexion()
-    const sql = 'SELECT * FROM `NFC` WHERE `Estatus` = "Nuevo" AND Borrado = 0  LIMIT 1';
-    await db.query(sql, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        win.webContents.send('RenderComprobante', results)
-    })
-    db.end()
+
+    try{
+        const response = await axios.get("http://localhost:3000/api/facturas/nfc")
+    console.log(response.data)
+    win.webContents.send('RenderComprobante', response.data)    
+}catch(error){
+        console.log(error)
+    }
+    
 }
 
 async function sendFactura(objFactura) {
@@ -339,6 +339,8 @@ async function sendFactura(objFactura) {
 }
 
 async function detalleSFactura(objDetalles) {
+
+    
     const db = await getconexion()
     await db.query(objDetalles, (error, results, fields) => {
         if (error) {
@@ -349,51 +351,43 @@ async function detalleSFactura(objDetalles) {
     db.end()
 }
 async function getFacturaIndividual(){
-    const db = await getconexion()
-    const sql = 'SELECT Factura.ID_Factura, Factura.ID_NFC FROM `Factura` ORDER BY `Factura`.`ID_Factura` DESC LIMIT 1;'
 
-await db.query(sql,  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
-        console.log(results)
-   presentarDatos(results)
+    try{
+        const response = await axios.get("http://localhost:3000/api/facturas/detalles")
+    console.log(response.data)
+    let initial = { buscador :""}
+    presentarDatos(response.data)
     getFactura(initial)
-    })
-db.end()
+}catch(error){
+        console.log(error)
+    }
 
 }
 
 async function getfactunf(obj){
-    const db = await getconexion()
-    const sql = 'SELECT Factura.ID_Factura, Factura.ID_NFC FROM `Factura` WHERE Factura.ID_Factura = ?;'
-
-await db.query(sql, [obj], (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
-
-        console.log(results)
-        presentarDatos(results)
-        getFactura(initial)      
-    })
-db.end()
-
+    
+    try{
+        const response = await axios.get(`http://localhost:3000/api/facturas/${obj}`)
+    console.log(response.data)
+    let initial = { buscador :""}
+    presentarDatos(response.data)
+    getFactura(initial)
+}catch(error){
+        console.log(error)
+    }
+    
 }
 
 async function getFactura(obj){
-    const db = await getconexion()
 
-    const sql = 'SELECT `Factura`.`ID_Factura`, `Factura`.`SubTotal`, `Factura`.`Total`, `Factura`.`Fecha`, `Cliente`.`ID_CLI`, `Cliente`.`Nombre`, `Tipo_Factura`.`Tipo` FROM `Factura` INNER JOIN `Cliente` ON `Factura`.`ID_CLI` = `Cliente`.`ID_CLI` INNER JOIN `Tipo_Factura` ON `Factura`.`ID_Tipo_Factura` = `Tipo_Factura`.`ID_Tipo_Factura`'
-    await db.query(sql,  (error, results, fields) => {
-            if (error) {
-                console.log(error);
-            }
-            win.webContents.send('RenderFacturas', results, obj);
-        })
-    db.end()
+    try{
+        const response = await axios.get(`http://localhost:3000/api/facturas`)
+    console.log(response.data)
+    win.webContents.send('RenderFacturas', response.data, obj);    
+}catch(error){
+        console.log(error)
+    }
+
 }
 
 
@@ -413,24 +407,26 @@ async function presentarDatos(obj){
     const db = await getconexion()
     console.log(obj[0].ID_Factura)
     console.log(obj[0].ID_NFC)
-let sql =""
     if(obj[0].ID_NFC == null){
-
-    sql = 'SELECT Factura.ID_Factura, Factura.Comentario, Factura.SubTotal, Factura.Impuesto, Factura.Total, Factura.Fecha, Cliente.ID_CLI , Cliente.Nombre AS NombreCliente,Cliente.Apellidos ,Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Usuario.Nombre, Tipo_Factura.Tipo, Detalles_Factura.Precio, Detalles_Factura.Total AS totalp, Detalles_Factura.Cantidad, Producto.Producto FROM Factura INNER JOIN Cliente ON Factura.ID_CLI = Cliente.ID_CLI INNER JOIN Usuario ON Factura.ID_usu = Usuario.ID_Usu INNER JOIN Tipo_Factura ON Factura.ID_Tipo_Factura = Tipo_Factura.ID_Tipo_Factura INNER JOIN Detalles_Factura ON Detalles_Factura.ID_Factura = Factura.ID_Factura INNER JOIN Producto ON Producto.ID_Producto = Detalles_Factura.ID_Producto WHERE Factura.ID_Factura = ?;'
+        try{
+            const response = await axios.get(`http://localhost:3000/api/facturas/mostrar/${[obj[0].ID_Factura]}`)
+        console.log(response.data)
+        winPrint.webContents.send('RenderFacturaPrint2', response.data);
+        win.webContents.send('RenderFacturaPrint', response.data);         
+    }catch(error){
+            console.log(error)
+        }
 }else{
-    sql = 'SELECT Factura.ID_Factura, NFC.NFC, Factura.ID_NFC, Factura.Comentario, Factura.SubTotal, Factura.Impuesto, Factura.Total, Factura.Fecha, Cliente.ID_CLI ,Cliente.Nombre AS NombreCliente,Cliente.Apellidos ,Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Usuario.Nombre, Tipo_Factura.Tipo, Detalles_Factura.Precio, Detalles_Factura.Total AS totalp, Detalles_Factura.Cantidad, Producto.Producto FROM Factura INNER JOIN Cliente ON Factura.ID_CLI = Cliente.ID_CLI INNER JOIN Usuario ON Factura.ID_usu = Usuario.ID_Usu INNER JOIN Tipo_Factura ON Factura.ID_Tipo_Factura = Tipo_Factura.ID_Tipo_Factura INNER JOIN Detalles_Factura ON Detalles_Factura.ID_Factura = Factura.ID_Factura INNER JOIN Producto ON Producto.ID_Producto = Detalles_Factura.ID_Producto INNER JOIN NFC ON NFC.ID_NFC = Factura.ID_NFC WHERE Factura.ID_Factura = ?;'
+    try{
+        const response = await axios.get(`http://localhost:3000/api/facturas/mostrarNFC/${[obj[0].ID_Factura]}`)
+    console.log(response.data)
+    winPrint.webContents.send('RenderFacturaPrint2', response.data);
+    win.webContents.send('RenderFacturaPrint', response.data);         
+}catch(error){
+        console.log(error)
+    }
 }
 
-await db.query(sql,[obj[0].ID_Factura],  (error, results, fields) => {
-    if (error) {
-        console.log(error);
-    }
-    console.log(results)
-
-    winPrint.webContents.send('RenderFacturaPrint2', results);
-    win.webContents.send('RenderFacturaPrint', results);     
-})
-db.end()
 }
 
 async function addUser (obj){
@@ -448,15 +444,15 @@ async function addUser (obj){
 }
 
 async function getUsuario(){
-    const db = await getconexion()
-    const sql = 'SELECT * From `Usuario`'
-    await db.query(sql,  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-  win.webContents.send('RenderUsuario', results)
-    })
-    db.end()
+
+    try{
+        const response = await axios.get("http://localhost:3000/api/users")
+    console.log(response.data)
+  win.webContents.send('RenderUsuario',response.data)    
+    }catch(error){
+        console.log(error)
+    }
+
 }
 
 async function deleteUsuario(obj){
@@ -481,8 +477,7 @@ console.log(printer.name)
      const options = {
          silent: true,
          deviceName: printer.name,
-         pageSize: { height: 301000, width: 50000 },
-         footer:"Conforpra. C. Juan Sánchez Ramírez 56, Santo Domingo 10105. (809)-908-4443. conforpra.servicios@gmail.com"
+         pageSize: { height: 301000, width: 50000 }
      }
 
      winPrint.webContents.print(options,  (success, errorType) => {
@@ -513,28 +508,27 @@ async function addCliente (obj){
 }
 
 async function getCliente(obj){
-    const db = await getconexion()
-    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI'
-    await db.query(sql,  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-  win.webContents.send('RenderCliente', results, obj)
-    })
-    db.end()
+    try{
+        const response = await axios.get("http://localhost:3000/api/clientes")
+    console.log(response.data)
+    win.webContents.send('RenderCliente', response.data, obj)    
+    }catch(error){
+        console.log(error)
+    }
 }
 
 async function ModificarCli(id){
-    const db = await getconexion()
-    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI WHERE Cliente.ID_CLI = ?'
-    await db.query(sql, id, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-open()
-        WinFom.webContents.send('EditCliente', results);
-    })
-    db.end()
+    
+try{
+        const response = await axios.get(`http://localhost:3000/api/clientes/Modificar/${id}`)
+    console.log(response.data)
+    open()
+    WinFom.webContents.send('EditCliente', response.data);  
+      
+    }catch(error){
+        console.log(error)
+    }
+    
  }
 
 async function UpdateCli(obj, id){
