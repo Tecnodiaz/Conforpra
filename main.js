@@ -211,60 +211,46 @@ console.log(id)
 db.end()
  }
 
-
- async function EliminarProductos(id){
-    const conn = await getconexion();
-console.log(id)
-    const sql = "UPDATE `Producto` SET `Borrado` = '1' WHERE `Producto`.`ID_Producto` = ?"
-    await conn.query(sql, id, (error, results, fields)  => 
-    { 
-        if (error) {
-        console.log(error);
-    }
-        getServicios()
-})
-db.end()
- }
-
-async function ModificarCli(id){
+ async function addNFC (obj){
     const db = await getconexion()
-    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI WHERE Cliente.ID_CLI = ?'
-    await db.query(sql, id, (error, results, fields) => {
+    const sql = 'INSERT INTO `NFC` (`NFC`, `Estatus`) VALUES (?, ?)';
+    await db.query(sql,[obj.Nfc, obj.Estatus],  (error, results, fields) => {
         if (error) {
             console.log(error);
         }
-open()
-        WinFom.webContents.send('EditCliente', results);
+        console.log(results)
+        getNFC()
     })
     db.end()
- }
+}
 
-async function UpdateCli(obj, id){
+ async function getNFC(){
     const db = await getconexion()
-    const sql = 'UPDATE Cliente SET ? WHERE ID_CLI = ?'
-    await db.query(sql, [obj, id], (error, results, fields) => {
+    const sql = 'SELECT * FROM `NFC` WHERE Borrado = 0 ORDER BY `NFC`.`Estatus` ASC '
+    await db.query(sql,  (error, results, fields) => {
         if (error) {
             console.log(error);
         }
-        let initial = { buscador :""}
-
-    getCliente(initial)
-    WinFom.hide()
-    })
-    db.end()  
+        win.webContents.send('RenderNfc', results);
+})
+    db.end()
 }
+
+
+
+
 
 function crearDocs(obj){
     console.log(obj)
         // Use default printing options
         winPrint.webContents.printToPDF({}).then
         (data => {
-          const pdfPath = path.join(os.homedir(), 'Desktop', `'${obj.nombre}${obj.date}.pdf'`)
+          const pdfPath = path.join(os.homedir(), 'Escritorio', `'${obj.nombre}${obj.date}.pdf'`)
           fs.writeFile(pdfPath, data,(error) => {
             if (error) throw error
             new Notification({
                 title: "ConforpraTech",
-                body: `Se descargo su archivo pdf en: ${pdfPath}`
+                body: `Wrote PDF successfully to ${pdfPath}`
             }).show()
           })
 
@@ -283,6 +269,85 @@ function open(){
     WinFom.show()
 }
 
+
+
+async function addProducto (obj){
+    const db = await getconexion()
+    const sql = 'INSERT INTO `Producto` (`Producto`, `Descripcion`, `Precio`, `ID_Tipo_Producto`) VALUES (?, ?, ?, ?)';
+    await db.query(sql,[obj.Nombre, obj.DescripcionProduc, obj.Precio, obj.TipoProduc],  (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        getServicios()
+    })
+    db.end()
+}
+
+async function getServicios(){
+    const db = await getconexion()
+    const sql = 'SELECT Producto.ID_Producto ,Producto.Producto, Producto.Descripcion, Producto.Precio, Tipo_Producto.Nombre FROM Producto INNER JOIN Tipo_Producto ON Producto.ID_Tipo_Producto = Tipo_Producto.ID_Tipo_Producto WHERE Borrado = 0;'
+    await db.query(sql,  (error, results, fields) => {
+            if (error) {
+                console.log(error);
+            }
+        win.webContents.send('RenderServicios', results);
+        console.log(results)
+        })
+    db.end()
+}
+
+
+async function EliminarProductos(id){
+    const conn = await getconexion();
+console.log(id)
+    const sql = "UPDATE `Producto` SET `Borrado` = '1' WHERE `Producto`.`ID_Producto` = ?"
+    await conn.query(sql, id, (error, results, fields)  => 
+    { 
+        if (error) {
+        console.log(error);
+    }
+        getServicios()
+})
+db.end()
+ }
+
+
+async function getComprobante() {
+    const db = await getconexion()
+    const sql = 'SELECT * FROM `NFC` WHERE `Estatus` = "Nuevo" AND Borrado = 0  LIMIT 1';
+    await db.query(sql, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        win.webContents.send('RenderComprobante', results)
+    })
+    db.end()
+}
+
+async function sendFactura(objFactura) {
+    const db = await getconexion()
+    await db.query(objFactura, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        let initial = { buscador :""}
+
+        console.log(results)
+    getFactura(initial)
+    })
+    db.end()
+}
+
+async function detalleSFactura(objDetalles) {
+    const db = await getconexion()
+    await db.query(objDetalles, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        console.log(results)
+    })
+    db.end()
+}
 async function getFacturaIndividual(){
     const db = await getconexion()
     const sql = 'SELECT Factura.ID_Factura, Factura.ID_NFC FROM `Factura` ORDER BY `Factura`.`ID_Factura` DESC LIMIT 1;'
@@ -331,69 +396,6 @@ async function getFactura(obj){
     db.end()
 }
 
-async function addProducto (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `Producto` (`Producto`, `Descripcion`, `Precio`, `ID_Tipo_Producto`) VALUES (?, ?, ?, ?)';
-    await db.query(sql,[obj.Nombre, obj.DescripcionProduc, obj.Precio, obj.TipoProduc],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        getServicios()
-    })
-    db.end()
-}
-
-async function getComprobante() {
-    const db = await getconexion()
-    const sql = 'SELECT * FROM `NFC` WHERE `Estatus` = "Nuevo" AND Borrado = 0  LIMIT 1';
-    await db.query(sql, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        win.webContents.send('RenderComprobante', results)
-    })
-    db.end()
-}
-
-async function sendFactura(objFactura) {
-    const db = await getconexion()
-    await db.query(objFactura, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
-
-        console.log(results)
-    getFactura(initial)
-    })
-    db.end()
-}
-
-async function detalleSFactura(objDetalles) {
-    const db = await getconexion()
-    await db.query(objDetalles, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        console.log(results)
-    })
-    db.end()
-}
-
-async function addCliente (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `Cliente` ( `Nombre`, `Apellidos`, `Identidad`, `Telefono`, `Direccion`, `Email`, `ID_Tipo_CLI`) VALUES ( ?,?, ?, ?, ?, ?, ?)';
-    await db.query(sql,[obj.Nombre, obj.Apellidos, obj.Identidad, obj.Telefono, obj.Direccion, obj.Email, obj.ID_Tipo_CLI],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
-        console.log(results)
-        getCliente(initial)
-        WinFom.hide()
-    })
-    db.end()
-}
 
 async function getFacturaFilt(obj){
     const db = await getconexion()
@@ -445,75 +447,6 @@ async function addUser (obj){
     db.end()
 }
 
-function Print(){
-     // Finding Default Printer name
-     let printersInfo = winPrint.webContents.getPrinters();
-     let printer = printersInfo.filter(printer => printer.isDefault === true)[0];
-console.log(printer.name)
-     const options = {
-         silent: true,
-         deviceName: printer.name,
-         pageSize: { height: 301000, width: 50000 },
-         footer:"Conforpra. C. Juan Sánchez Ramírez 56, Santo Domingo 10105. (809)-908-4443. conforpra.servicios@gmail.com"
-     }
-
-     winPrint.webContents.print(options,  (success, errorType) => {
-        if (!success) console.log(errorType)
-         winPrint = null;
-         console.log('volvi')
-     });
-}
-
-async function addNFC (obj){
-    const db = await getconexion()
-    const sql = 'INSERT INTO `NFC` (`NFC`, `Estatus`) VALUES (?, ?)';
-    await db.query(sql,[obj.Nfc, obj.Estatus],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        console.log(results)
-        getNFC()
-    })
-    db.end()
-}
-
-async function getServicios(){
-    const db = await getconexion()
-    const sql = 'SELECT Producto.ID_Producto ,Producto.Producto, Producto.Descripcion, Producto.Precio, Tipo_Producto.Nombre FROM Producto INNER JOIN Tipo_Producto ON Producto.ID_Tipo_Producto = Tipo_Producto.ID_Tipo_Producto WHERE Borrado = 0;'
-    await db.query(sql,  (error, results, fields) => {
-            if (error) {
-                console.log(error);
-            }
-        win.webContents.send('RenderServicios', results);
-        console.log(results)
-        })
-    db.end()
-}
-
-async function getNFC(){
-    const db = await getconexion()
-    const sql = 'SELECT * FROM `NFC` WHERE Borrado = 0 ORDER BY `NFC`.`Estatus` ASC '
-    await db.query(sql,  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        win.webContents.send('RenderNfc', results);
-})
-    db.end()
-}
-
-async function getCliente(obj){
-    const db = await getconexion()
-    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI'
-    await db.query(sql,  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-  win.webContents.send('RenderCliente', results, obj)
-    })
-    db.end()
-}
-
 async function getUsuario(){
     const db = await getconexion()
     const sql = 'SELECT * From `Usuario`'
@@ -539,6 +472,87 @@ async function deleteUsuario(obj){
 })
     db.end()
 }
+
+function Print(){
+     // Finding Default Printer name
+     let printersInfo = winPrint.webContents.getPrinters();
+     let printer = printersInfo.filter(printer => printer.isDefault === true)[0];
+console.log(printer.name)
+     const options = {
+         silent: true,
+         deviceName: printer.name,
+         pageSize: { height: 301000, width: 50000 },
+         footer:"Conforpra. C. Juan Sánchez Ramírez 56, Santo Domingo 10105. (809)-908-4443. conforpra.servicios@gmail.com"
+     }
+
+     winPrint.webContents.print(options,  (success, errorType) => {
+        if (!success) console.log(errorType)
+         winPrint = null;
+         console.log('volvi')
+     });
+}
+
+
+
+
+
+
+async function addCliente (obj){
+    const db = await getconexion()
+    const sql = 'INSERT INTO `Cliente` ( `Nombre`, `Apellidos`, `Identidad`, `Telefono`, `Direccion`, `Email`, `ID_Tipo_CLI`) VALUES ( ?,?, ?, ?, ?, ?, ?)';
+    await db.query(sql,[obj.Nombre, obj.Apellidos, obj.Identidad, obj.Telefono, obj.Direccion, obj.Email, obj.ID_Tipo_CLI],  (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        let initial = { buscador :""}
+        console.log(results)
+        getCliente(initial)
+        WinFom.hide()
+    })
+    db.end()
+}
+
+async function getCliente(obj){
+    const db = await getconexion()
+    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI'
+    await db.query(sql,  (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+  win.webContents.send('RenderCliente', results, obj)
+    })
+    db.end()
+}
+
+async function ModificarCli(id){
+    const db = await getconexion()
+    const sql = 'SELECT Cliente.ID_CLI, Cliente.Nombre, Cliente.Apellidos, Cliente.Identidad, Cliente.Telefono, Cliente.Direccion, Cliente.Email, Cliente.ID_Tipo_CLI, Tipo_Cliente.Tipo_cliente FROM Cliente INNER JOIN Tipo_Cliente ON Cliente.ID_Tipo_CLI = Tipo_Cliente.ID_Tipo_CLI WHERE Cliente.ID_CLI = ?'
+    await db.query(sql, id, (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+open()
+        WinFom.webContents.send('EditCliente', results);
+    })
+    db.end()
+ }
+
+async function UpdateCli(obj, id){
+    const db = await getconexion()
+    const sql = 'UPDATE Cliente SET ? WHERE ID_CLI = ?'
+    await db.query(sql, [obj, id], (error, results, fields) => {
+        if (error) {
+            console.log(error);
+        }
+        let initial = { buscador :""}
+
+    getCliente(initial)
+    WinFom.hide()
+    })
+    db.end()  
+}
+
+
 
 module.exports = {
     createWindow,
