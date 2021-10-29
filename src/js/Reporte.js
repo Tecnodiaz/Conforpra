@@ -71,8 +71,8 @@ Monto.innerHTML = template4
         <td>${element.Nombre}</td>
         <td>${element.Fecha}</td>
         <td>${element.Total}</td>
-        <td><a>Ver Factura<a></td>
-      </tr>  `
+        <td onclick="VerFac2(${element.ID_Factura})"><a>Ver Documentos<a></td>
+        </tr>  `
     })
     mylistReporte.innerHTML = template;
 })
@@ -80,16 +80,6 @@ Monto.innerHTML = template4
 ipcRenderer.on('RenderFacturas', (event, results) => {
     let template = ""
 
-/*let total = results[0].Total 
-for(i=1; i<results.length; i++){
-total = total + results[i].Total
-}
-
-    let template4 =`  <p>Total</p>
-<p class="dinero">$${total}</p>`
-
-Monto.innerHTML = template4
-*/  
 const list = results
     list.forEach(element =>{
         template += `
@@ -99,7 +89,7 @@ const list = results
         <td>${element.Fecha}</td>
         <td>${element.Total}</td>
         <td onclick="VerFac2(${element.ID_Factura})"><a>Ver Documentos<a></td>
-        </tr>      </tr>  `
+        </tr>`
     })
     mylistReporte.innerHTML = template;
 })
@@ -107,5 +97,4 @@ const list = results
 async function VerFac2(obj){
     PrintView()
     ipcRenderer.invoke('VerFacturas', obj)
-
 }
