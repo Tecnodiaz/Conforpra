@@ -300,17 +300,14 @@ async function getServicios(){
 
 
 async function EliminarProductos(id){
-    const conn = await getconexion();
-console.log(id)
-    const sql = "UPDATE `Producto` SET `Borrado` = '1' WHERE `Producto`.`ID_Producto` = ?"
-    await conn.query(sql, id, (error, results, fields)  => 
-    { 
-        if (error) {
-        console.log(error);
-    }
-        getServicios()
-})
-db.end()
+ try{ 
+     const response = await axios.put(`http://localhost:3000/api/servicios/${id}`)  
+        console.log(response.data)
+        
+} 
+catch(error){  console.log(error) }
+
+getServicios()
  }
 
 
