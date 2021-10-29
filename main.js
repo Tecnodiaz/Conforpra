@@ -185,6 +185,16 @@ ipcMain.handle('login', (event, obj) => {
 
     let usu = obj.usuario;
     let con = obj.contraseña;
+
+try {
+    const response = await axios.get(`http://localhost:3000/api/users/validar/${usu}/${con}`)
+    console.log(response.data)
+    win.webContents.send('RenderLogin', response.data);
+} catch (error) {
+    console.log(error)
+}
+
+/*
     const conn = await getconexion();
 
     const sql = "SELECT * FROM `Usuario` WHERE Nom_Usuario = ? AND Contraseña = ?"
@@ -195,21 +205,20 @@ ipcMain.handle('login', (event, obj) => {
     }
     win.webContents.send('RenderLogin', results);
 })
-db.end()
+db.end()*/
  }
 
 async function EliminarNFC(id){
-    const conn = await getconexion();
-console.log(id)
-    const sql = "UPDATE `NFC` SET `Borrado` = '1' WHERE `NFC`.`ID_NFC` = ?"
-    await conn.query(sql, id, (error, results, fields)  => 
-    { 
-        if (error) {
-        console.log(error);
-    }
-        getNFC()
-})
-db.end()
+
+    try{ 
+        const response = await axios.put(`http://localhost:3000/api/nfc/Eliminar/${id}`)
+           console.log(response.data)
+           
+   } 
+   catch(error){  console.log(error) }
+
+   getNFC()
+   
  }
 
  async function addNFC (obj){
@@ -301,7 +310,7 @@ async function getServicios(){
 
 async function EliminarProductos(id){
  try{ 
-     const response = await axios.put(`http://localhost:3000/api/servicios/${id}`)  
+     const response = await axios.put(`http://localhost:3000/api/servicios/${id}`)
         console.log(response.data)
         
 } 
@@ -324,22 +333,27 @@ async function getComprobante() {
 }
 
 async function sendFactura(objFactura) {
-    const db = await getconexion()
-    await db.query(objFactura, (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
 
-        console.log(results)
-    getFactura(initial)
-    })
-    db.end()
+try {
+    const response = axios.post("http://localhost:3000/api/facturas/send",{objFactura: objFactura})
+} catch (error) {
+    console.log(error)
+}
+let initial = { buscador :""}
+
+getFactura(initial)
+
 }
 
 async function detalleSFactura(objDetalles) {
 
-    
+try {
+    const response = axios.post("http://localhost:3000/api/facturas/send/detalles",{objDetalles: objDetalles})
+} catch (error) {
+    console.log(error)
+}
+
+    /*    
     const db = await getconexion()
     await db.query(objDetalles, (error, results, fields) => {
         if (error) {
@@ -347,7 +361,7 @@ async function detalleSFactura(objDetalles) {
         }
         console.log(results)
     })
-    db.end()
+    db.end()*/
 }
 async function getFacturaIndividual(){
 
@@ -445,7 +459,7 @@ async function getUsuario(){
 
     try{
         const response = await axios.get("http://localhost:3000/api/users")
-    console.log('users')
+    console.log(response.data)
   win.webContents.send('RenderUsuario',response.data)    
     }catch(error){
         console.log(error)
@@ -453,18 +467,15 @@ async function getUsuario(){
 
 }
 
-async function deleteUsuario(obj){
-    const db = await getconexion()
-    const sql = 'DELETE FROM `Usuario` WHERE `Usuario`.`ID_Usu` = ?'
-    await db.query(sql,[obj],  (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
- // win.webContents.send('RenderUsuario', results)
+async function deleteUsuario(id){
 
- getUsuario()    
-})
-    db.end()
+    try {
+        const response = axios.put(`http://localhost:3000/api/users/${id}`)
+    console.log(response)
+    } catch (error) {
+        console.log(error)
+    }
+    getUsuario()
 }
 
 function Print(){
@@ -536,18 +547,18 @@ try{
  }
 
 async function UpdateCli(obj, id){
-    const db = await getconexion()
-    const sql = 'UPDATE Cliente SET ? WHERE ID_CLI = ?'
-    await db.query(sql, [obj, id], (error, results, fields) => {
-        if (error) {
-            console.log(error);
-        }
-        let initial = { buscador :""}
 
-    getCliente(initial)
-    WinFom.hide()
-    })
-    db.end()  
+    try{ 
+        const response = await axios.put(`http://localhost:3000/api/clientes/${id}`,{obj: obj})
+           console.log(response.data)
+           
+   } 
+   catch(error){  console.log(error) }
+
+   let initial = { buscador :""}
+
+   getCliente(initial)
+   WinFom.hide()
 }
 
 
