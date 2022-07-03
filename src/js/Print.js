@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function(){
 })
 ipcRenderer.on('RenderFacturaPrint2', (event, results) =>{
     nom = results[0].NombreCliente
-    dateN = results[0].Fecha
+    dateN = results[0].ID_Factura
     console.log(results)
 
     let template = `
@@ -31,20 +31,18 @@ ipcRenderer.on('RenderFacturaPrint2', (event, results) =>{
     <h6 id="CorreoPrint">${results[0].Email}</h6>
 `
     
-let comen = `<a>${results[0].Comentario}</a>`
 let fac = `<h1>Factura#${results[0].ID_Factura}</h1>`
 let dataFac =`
 <h6>Direccion: Juan Sánchez Ramírez 56, Santo Domingo Zona Universitaria.</h6>
 <h6>Fecha: ${results[0].Fecha}</h6>
 <h6>Rnc: 132046692</h6>
 <h6>Telefono: (809)-908-4443</h6>
-<h6>Correo: conforpra.servicios@gmail.com</h6>
+<h6>Correo: servicios@conforpra.com.do</h6>
 
 <h5 style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h5>
 <h5 class="EmpresaPrint" style="margin-right: 3%;">${results[0].Tipo}</h5>`
 
 FacturaPrint3.innerHTML = dataFac
-comentarioP.innerHTML = comen
 FacturaPrint2.innerHTML = template
 Factura2.innerHTML = fac
 
@@ -64,11 +62,11 @@ Factura2.innerHTML = fac
     });
     mylistPrint.innerHTML = template2;
 
-    let template3 =`<a class="subTil" id="SubTotal">Sub Total</a> <a class="subRes">${results[0].SubTotal}</a>
+    let template3 =`<a class="subTil" id="SubTotal">SubTotal: ${results[0].SubTotal}</a>
     <br>
-    <a class="subTil">Impuestos</a> <a class="subRes">${results[0].Impuesto}</a>
+    <a class="subTil">Impuestos: ${results[0].Impuesto}</a>
     <br>
-    <a class="subTil">Total</a> <a class="subRes" style="font-size: 20px;">${results[0].Total}</a>
+    <a class="subTil">Total: ${results[0].Total}</a>
     <br>
     `
     tablaResul.innerHTML = template3

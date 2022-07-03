@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
+<body >
     <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,15 +16,15 @@
    <title>Print</title>
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@800&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="../asset/css/Base.css">
+   <link href="https://fonts.googleapis.com/css2?family=Arima+Madurai:wght@300&display=swap" rel="stylesheet">   <link rel="stylesheet" href="../asset/css/Base.css">
    <script src="../js/Print.js"></script>
 </head>
-<body>
-        <div id="FacturaTitle" class="FacturaPrint" >
+<body style="width: 210mm; height: 297mm;" >
+  <div style="width: 210mm; height: 227mm;" >
+        <div id="FacturaTitle" class="FacturaPrint">
         </div>
         
-            <h1 class="FacturaEmpresa">Conforpra, SRL</h1>
+            <img class="FacturaEmpresa" src="../asset/img/logo png azul.png" />
             
         
             <div id=FacturaPrint2 class="DatosCli">
@@ -37,7 +37,7 @@
                 <tr>
                         <table class="styled-table" style="width:90%;">
                           <thead>
-                          <th>Articulo</th>
+                  <th>Articulo</th>
                   <th>Cantidad</th>
                   <th>Precio</th>
                   <th>Total</th>
@@ -54,7 +54,23 @@
         
             <div class="tablaM" id="comentarioP">
         </div>
-
+      </div>
+      <footer style="
+      margin-bottom: 0;
+      text-align: left;
+      margin-left: 20px;
+      margin-bottom: 30px;
+      bottom: 0;
+      height: 100px;
+      font-family: 'Arima Madurai';
+      width: 100%;">
+        <a>¿Alguna pregunta?<br>
+          Envíanos un correo electrónico a<strong> servicios@conforpra.com.do </b></strong><br>
+          o escríbenos vía WhatsApp al <b>849 707 4443</b></a>
+          <hr color="#FAAE00" width="90%"/>
+          <p><b>¡GRACIAS POR PREFERIRNOS!</b></p>
+        </footer>
+       
 
 </body>
 </html>

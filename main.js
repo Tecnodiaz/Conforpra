@@ -1,4 +1,3 @@
-const { getconexion } = require ('./database');
 const electron = require('electron')
 const {webContents} = electron.webContents
 const {Notification} = require('electron')
@@ -8,11 +7,29 @@ const fs = require('fs')
 const os = require('os')
 const path = require('path');
 const { default: axios } = require('axios');
-const shell = electron.shell
+const shell = require('electron').shell
 
 let WinFom;
 let win;
 let winPrint;
+let winCargando;
+
+function createWind(){
+    winCargando = new BrowserWindow({
+width:900,
+height: 430,
+resizable: false,
+frame: false,
+webPreferences: {
+            nodeIntegration: true,
+            enableRemoteModule: true,
+            contextIsolation: false
+        }
+    })
+   winCargando.setMenu(null)
+
+    winCargando.loadFile('src/views/cargando.html')
+};
 
 
 function createWindowPrint(){
@@ -64,16 +81,17 @@ height: 900,
 })
 createWindowPrint()
 createFormulario()
-
+createWind()
 win.loadFile('src/views/Facturas.html')
 //win.setMenu(null)
 
-//winPrint.hide()
-//WinFom.hide()
-
+winPrint.hide()
+WinFom.hide()
+winCargando.hide()
 win.on("closed", ()=>{
     winPrint.close()
     WinFom.close()
+    winCargando.close()
 })
 
 }
@@ -87,12 +105,10 @@ win.on("closed", ()=>{
     })
 
 ipcMain.handle('GetFacturas', (event, obj) =>{
-    console.log(obj)
     getFactura(obj)
 })
 
 ipcMain.handle('GetFacturaFill', (event, obj) =>{
-    console.log(obj)
     getFacturaFilt(obj)
 })
 
@@ -109,12 +125,16 @@ ipcMain.handle('cancelarList', (event) =>{
 })
 
 ipcMain.handle('SendFactura', (event, objFactura, objDetalles) =>{
+
     sendFactura(objFactura)
-    detalleSFactura(objDetalles)
-    getFacturaIndividual()
+
+    setTimeout(() => {
+    detalleSFactura(objDetalles)    
+   }, 5000);
 })
 
 ipcMain.handle('VerFacturas', (event, obj)=>{
+    cargar()
     getfactunf(obj)
 })
 
@@ -156,7 +176,6 @@ ipcMain.handle('addProducto', (event, obj) =>{
 })
 
 ipcMain.handle('CrearDocs', (event, obj) =>{
-console.log(obj)
     crearDocs(obj)
 })
 
@@ -178,22 +197,32 @@ ipcMain.handle('OpenPrint', (event) =>{
 
 ipcMain.handle('login', (event, obj) => {
     validarlogin(obj);
- })
+})
+
+
+function cargar (){
+    win.hide()
+    winCargando.show()
+}
+
+function cargarT (){
+    winCargando.hide()
+    win.show()
+}
 
 
  const validarlogin = (obj) =>  {
-
+cargar()
     let usu = obj.usuario;
     let con = obj.contraseña;
 
 axios.get(`http://localhost:3000/api/users/validar/${usu}/${con}`).then(function (response) {
     // handle success
-    console.log(response.data)
+    cargarT()
     win.webContents.send('RenderLogin', response.data);
    
   }).catch(function (error) {
     // handle error
-    console.log(error);
   })
 
 
@@ -204,7 +233,6 @@ axios.get(`http://localhost:3000/api/users/validar/${usu}/${con}`).then(function
 function EliminarNFC(id){
 
 axios.put(`http://localhost:3000/api/nfc/Eliminar/${id}`).then(function(response){
-    console.log(response.data)
 }).catch(function(error){  console.log(error) }).then(function(){
 
     getNFC()
@@ -215,8 +243,8 @@ axios.put(`http://localhost:3000/api/nfc/Eliminar/${id}`).then(function(response
   function addNFC (obj){
     axios.post('http://localhost:3000/api/nfc',
         {NFC:obj.Nfc,Estatus:obj.Estatus} ).then(function (response) {
-            console.log(response);
-           
+            ;
+            getNFC()
           }).catch(function (error) {
             console.log(error);
           }).then(function () {
@@ -229,7 +257,6 @@ axios.put(`http://localhost:3000/api/nfc/Eliminar/${id}`).then(function(response
 function getNFC(){
 
     axios.get("http://localhost:3000/api/nfc").then(function(response){
-        console.log(response.data)
         win.webContents.send('RenderNfc', response.data);
     }).catch(function(error){
     console.log(error)
@@ -240,10 +267,9 @@ function getNFC(){
 
 
 function crearDocs(obj){
-    console.log(obj)
         // Use default printing options
+        const pdfPath = path.join(os.homedir(), 'Desktop\\Recibos', `${obj.nombre}${obj.date}.pdf`)
         winPrint.webContents.printToPDF({}).then(data => {
-          const pdfPath = path.join(os.homedir(), 'Escritorio', `'${obj.nombre}${obj.date}.pdf'`)
           fs.writeFile(pdfPath, data, (error) => {
             if (error) throw error
             new Notification({
@@ -257,7 +283,10 @@ function crearDocs(obj){
                 body: `Failed to write PDF to ${pdfPath}: `
             }).show()
         })
-      }
+        shell.openPath(`C:\\Users\\COFORPRA\\Desktop\\Recibo\\${obj.nombre}${obj.date}.pdf`);
+//        shell.showItemInFolder('C:\\Users\\D19C1010\\Documents\\CertificadoAAB67KAAGAADMnNAAi.pdf')​
+
+    }
    
 
 
@@ -270,27 +299,24 @@ function open(){
  function addProducto (obj){
   
         axios.post('http://localhost:3000/api/productos',
-        {Producto:obj.Nombre, Descripcion:obj.DescripcionProduc,Precio:obj.precio,ID_Tipo_Producto:obj.TipoProduc} ).then(function (response) {
+        {Producto:obj.Nombre, Descripcion:obj.DescripcionProduc,Precio:obj.Precio,ID_Tipo_Producto:obj.TipoProduc} ).then(function (response) {
             // handle success
-            console.log(response);
+            getServicios()
           }).catch(function (error) {
             // handle error
             console.log(error);
-          }).then(function () {
-            // always executed
+          }).then(function(){
             getServicios()
-          });
+          })
    
   
         
 }
 
  function getServicios(){
-
     
         axios.get("http://localhost:3000/api/servicios").then(function (response) {
             // handle success
-            console.log(response.data)
     win.webContents.send('RenderServicios', response.data);    
           }).catch(function (error) {
             // handle error
@@ -304,9 +330,10 @@ function open(){
 
 function EliminarProductos(id){
  axios.put(`http://localhost:3000/api/servicios/${id}`).then(function(response){
-    console.log(response.data) 
 }).catch(function(error){
-    getServicios()
+    console.log(error)
+}).then(function(){
+getServicios()
 })
 } 
 
@@ -314,7 +341,6 @@ function EliminarProductos(id){
 function getComprobante() {
 
 axios.get("http://localhost:3000/api/facturas/nfc").then(function(response){
-    console.log(response.data)
     win.webContents.send('RenderComprobante', response.data)    
 
 }).catch(function(error){
@@ -324,9 +350,8 @@ axios.get("http://localhost:3000/api/facturas/nfc").then(function(response){
 }
 
 function sendFactura(objFactura) {
-
+cargar()
 axios.post("http://localhost:3000/api/facturas/send",{objFactura: objFactura}).then(function(response){
-    console.log(response)
 }).catch (function (error) {
     console.log(error)
 }).then(function(){
@@ -340,7 +365,8 @@ axios.post("http://localhost:3000/api/facturas/send",{objFactura: objFactura}).t
 
 function detalleSFactura(objDetalles) {
 axios.post("http://localhost:3000/api/facturas/send/detalles",{objDetalles: objDetalles}).then(function(response){
-    console.log(response)  
+    getFacturaIndividual()
+
 }).catch (function(error) {
     console.log(error)
 })
@@ -351,7 +377,7 @@ axios.post("http://localhost:3000/api/facturas/send/detalles",{objDetalles: objD
     
          axios.get("http://localhost:3000/api/facturas/detalles").then(function (response) {
             // handle success
-            console.log(response.data)
+           cargar()
             presentarDatos(response.data)
             
           }).catch(function (error) {
@@ -373,7 +399,7 @@ axios.post("http://localhost:3000/api/facturas/send/detalles",{objDetalles: objD
     
     
      axios.get(`http://localhost:3000/api/facturas/${obj}`).then(function(response){
-        console.log(response.data)
+        
         presentarDatos(response.data) 
      }).catch(function (error) {
         // handle error
@@ -391,48 +417,41 @@ function getFactura(obj){
 
     
         axios.get(`http://localhost:3000/api/facturas`).then(function(response){
-            console.log(response.data)
             win.webContents.send('RenderFacturas', response.data, obj);                
         }).catch(function(error) {
         console.log(error)
     })
-
+// cargarT()
 }
 
 
  function getFacturaFilt(obj){
-    
      axios.get(`http://localhost:3000/api/facturas/send/${obj}`).then(function (response) {
         // handle success
-        console.log(response.data)
         win.webContents.send('RenderFacturaFill', response.data);
     
       }).catch(function (error) {
         // handle error
         console.log(error);
       })
-  
-
 }
 
 function presentarDatos(obj){
-    const db = await getconexion()
-    console.log(obj[0].ID_Factura)
-    console.log(obj[0].ID_NFC)
     if(obj[0].ID_NFC == null){
-
+        console.log(obj[0].ID_Factura)
     axios.get(`http://localhost:3000/api/facturas/mostrar/${[obj[0].ID_Factura]}`).then(function(response){
-        console.log(response.data)
         winPrint.webContents.send('RenderFacturaPrint2', response.data);
         win.webContents.send('RenderFacturaPrint', response.data);
+        cargarT()
     }).catch(function(error){
             console.log(error)
         })
 }else{
 axios.get(`http://localhost:3000/api/facturas/mostrarNFC/${[obj[0].ID_Factura]}`).then(function(response){
-    console.log(response.data)
     winPrint.webContents.send('RenderFacturaPrint2', response.data);
-    win.webContents.send('RenderFacturaPrint', response.data);         
+    win.webContents.send('RenderFacturaPrint', response.data);
+    console.log("nfc")
+    cargarT()         
 }).catch(function(error){
         console.log(error)
     })
@@ -444,7 +463,6 @@ function addUser(obj) {
        axios.post('http://localhost:3000/api/users',
         {User:obj.User,Contraseña:obj.Contraseña,Nombre:obj.Nombre} ).then(function (response) {
             // handle success
-            console.log(response);
           }).catch(function (error) {
             // handle error
             console.log(error);
@@ -461,7 +479,6 @@ function addUser(obj) {
 function getUsuario(){
 
     axios.get("http://localhost:3000/api/users").then(function(response){
-    console.log(response.data)
   win.webContents.send('RenderUsuario',response.data)    
 }).catch(function(error){
         console.log(error)
@@ -472,7 +489,6 @@ function getUsuario(){
 function deleteUsuario(id){
 
 axios.put(`http://localhost:3000/api/users/${id}`).then(function(){
-    console.log(response)
 }).catch(function (error) {
         console.log(error)
     }).then(function(){
@@ -485,7 +501,6 @@ function Print(){
      // Finding Default Printer name
      let printersInfo = winPrint.webContents.getPrinters();
      let printer = printersInfo.filter(printer => printer.isDefault === true)[0];
-console.log(printer.name)
      const options = {
          silent: true,
          deviceName: printer.name,
@@ -495,7 +510,6 @@ console.log(printer.name)
      winPrint.webContents.print(options,  (success, errorType) => {
         if (!success) console.log(errorType)
          winPrint = null;
-         console.log('volvi')
      });
 }
 
@@ -509,11 +523,10 @@ console.log(printer.name)
          axios.post('http://localhost:3000/api/clientes',
         {Nombre:obj.Nombre,Apellidos:obj.Apellidos,Identidad:obj.Identidad,Telefono:obj.Telefono,Direccion:obj.Direccion,Email:obj.Email,ID_Tipo_CLI:obj.ID_Tipo_CLI} ).then(function (response) {
             // handle success
-            console.log(response);
           }).catch(function (error) {
             // handle error
             console.log(error);
-          })  .then(function () {
+          }).then(function () {
             // always executed
             let initial = { buscador :""}
             getCliente(initial)
@@ -531,7 +544,6 @@ console.log(printer.name)
          axios.get("http://localhost:3000/api/clientes").then(function (response) {
             // handle success
             win.webContents.send('RenderCliente', response.data, obj)  
-            console.log(response.data)
           }).catch(function (error) {
             // handle error
             console.log(error);
@@ -549,7 +561,6 @@ console.log(printer.name)
             // handle success
             open()
             WinFom.webContents.send('EditCliente', response.data);  
-            console.log(response.data)
           }) .catch(function (error) {
             // handle error
             console.log(error);
@@ -562,13 +573,10 @@ console.log(printer.name)
 
 function UpdateCli(obj, id){
 
- axios.put(`http://localhost:3000/api/clientes/${id}`,{obj: obj}).then(function(response){
-    console.log(response.data)
-    let initial = { buscador :""}
-
-   
+ axios.put(`http://localhost:3000/api/clientes/${id}`,{obj: obj}).then(function(response){   
  }).catch(function(error){  console.log(error) })
  .then(function(){
+    let initial = { buscador :""}
     getCliente(initial)
     WinFom.hide()  
  })
