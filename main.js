@@ -112,6 +112,11 @@ ipcMain.handle('GetFacturaFill', (event, obj) =>{
     getFacturaFilt(obj)
 })
 
+ipcMain.handle('venderCotizacion', (event, obj) =>{
+  cargar
+    cambiarVenta(obj)
+})
+
 ipcMain.handle('UpdateCli', (event, obj, id) =>{
     UpdateCli(obj, id)
 })
@@ -126,11 +131,8 @@ ipcMain.handle('cancelarList', (event) =>{
 
 ipcMain.handle('SendFactura', (event, objFactura, objDetalles) =>{
 
-    sendFactura(objFactura)
+    sendFactura(objFactura, objDetalles)
 
-    setTimeout(() => {
-    detalleSFactura(objDetalles)    
-   }, 5000);
 })
 
 ipcMain.handle('VerFacturas', (event, obj)=>{
@@ -224,12 +226,21 @@ axios.get(`http://localhost:3000/api/users/validar/${usu}/${con}`).then(function
   }).catch(function (error) {
     // handle error
   })
-
-
- 
-
  }
 
+ function cambiarVenta(datosVenta){
+if(datosVenta.nfcBoolean){
+    axios.put(`http://localhost:3000/api/facturas/cambiarNFC/${datosVenta.idFactura}`).then(function(responde){
+        getfactunf(datosVenta.idFactura)
+}).catch(function(error){console.log(error)})
+
+}else{
+    axios.put(`http://localhost:3000/api/facturas/cambiar/${datosVenta.idFactura}`).then(function(responde){
+        getfactunf(datosVenta.idFactura)
+    }).catch(function(error){console.log(error)})
+}
+}
+ 
 function EliminarNFC(id){
 
 axios.put(`http://localhost:3000/api/nfc/Eliminar/${id}`).then(function(response){
@@ -349,14 +360,14 @@ axios.get("http://localhost:3000/api/facturas/nfc").then(function(response){
     
 }
 
-function sendFactura(objFactura) {
+function sendFactura(objFactura, objDetalles) {
 cargar()
 axios.post("http://localhost:3000/api/facturas/send",{objFactura: objFactura}).then(function(response){
 }).catch (function (error) {
     console.log(error)
 }).then(function(){
     let initial = { buscador :""}
-
+    detalleSFactura(objDetalles)    
     getFactura(initial)
     
 })
@@ -421,7 +432,7 @@ function getFactura(obj){
         }).catch(function(error) {
         console.log(error)
     })
-// cargarT()
+ cargarT()
 }
 
 
@@ -438,7 +449,6 @@ function getFactura(obj){
 
 function presentarDatos(obj){
     if(obj[0].ID_NFC == null){
-        console.log(obj[0].ID_Factura)
     axios.get(`http://localhost:3000/api/facturas/mostrar/${[obj[0].ID_Factura]}`).then(function(response){
         winPrint.webContents.send('RenderFacturaPrint2', response.data);
         win.webContents.send('RenderFacturaPrint', response.data);

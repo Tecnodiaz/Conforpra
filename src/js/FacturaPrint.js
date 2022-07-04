@@ -34,8 +34,17 @@ async function CreateDocs(obj){
 async function Print(){
     ipcRenderer.invoke('Print')
 }
-
-
+function venderCotizacion (IdCotizacion, Nfc){
+    var arrayCompleto ={
+        idFactura: IdCotizacion,
+        nfcBoolean: Nfc
+    }
+    cambiarCotizacion(arrayCompleto)
+}
+function cambiarCotizacion(Cotizacion){
+    ipcRenderer.invoke('venderCotizacion',Cotizacion)
+    // FacturaView()
+}
 ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
    console.log(results)
     nom = results[0].NombreCliente
@@ -61,6 +70,10 @@ let dataFac =`
 
 <h5 style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h5>
 <h5 class="EmpresaPrint" style="margin-right: 3%;">${results[0].Tipo}</h5>`
+if(results[0].Tipo === 'Cotización'){ 
+    dataFac = `${dataFac} <button onclick="venderCotizacion(${results[0].ID_Factura}, ${false})"> Vender Cotizacion</button> 
+    <button onclick="venderCotizacion(${results[0].ID_Factura}, ${true})" > Vender Cotizacion con comprobante</button>`
+}
 
 FacturaPrint3.innerHTML = dataFac
 FacturaPrint2.innerHTML = template
