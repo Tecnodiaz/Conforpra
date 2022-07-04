@@ -53,19 +53,19 @@ ipcRenderer.on('RenderFacturaPrint', (event, results) =>{
 
     let template = `
 
-    <h6 id="FechaPrint"><b>${results[0].ID_CLI}-${results[0].NombreCliente} ${results[0].Apellidos}</b></h6>
-    <h6>RNC/C.I: ${results[0].Identidad}</h6>
-    <h6>Telefono: ${results[0].Telefono}</h6>
-    <h6 id="DirreccionPrint">${results[0].Direccion}</h6>
-    <h6 id="CorreoPrint">${results[0].Email}</h6>
+    <h6 id="FechaPrint" class="sinMargen"><b>${results[0].ID_CLI}-${results[0].NombreCliente} ${results[0].Apellidos}</b></h6>
+    <h6 class="sinMargen">RNC/C.I: ${results[0].Identidad}</h6>
+    <h6 class="sinMargen">Telefono: ${results[0].Telefono}</h6>
+    <h6 id="DirreccionPrint" class="sinMargen">${results[0].Direccion}</h6>
+    <h6 id="CorreoPrint" class="sinMargen">${results[0].Email}</h6>
 `
     
 let fac = `<h1>Factura#${results[0].ID_Factura}</h1>`
 let dataFac =`
-<h6>Direccion: Juan Sánchez Ramírez 56, Santo Domingo Zona Universitaria.</h6>
-<h6>Fecha: ${results[0].Fecha}</h6>
-<h6>Rnc: 132046692</h6>
-<h6>Telefono: (809)-908-4443</h6>
+<h6 class="sinMargen" >Direccion: Juan Sánchez Ramírez 56, Santo Domingo Zona Universitaria.</h6>
+<h6 class="sinMargen" >Fecha: ${results[0].Fecha}</h6>
+<h6 class="sinMargen" >Rnc: 132046692</h6>
+<h6 class="sinMargen" >Telefono: (809)-908-4443</h6>
 
 
 <h5 style="margin-right: 3%;"> Comprobante: ${results[0].NFC}</h5>

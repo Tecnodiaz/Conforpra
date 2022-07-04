@@ -376,12 +376,17 @@ text-align: right;
   font-family: 'Arima Madurai', cursive;
       font-weight: bold;
   }
+.sinMargen{
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
 
 .DatosFac{
   text-align: right;
   border-radius: 13px;
   float: right;
   width: 35%;
+  margin-bottom: 1px;
   margin-right: 6%;
   font-size: 15;
   font-family: 'Arima Madurai', cursive;
