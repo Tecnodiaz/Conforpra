@@ -294,7 +294,7 @@ function crearDocs(obj){
                 body: `Failed to write PDF to ${pdfPath}: `
             }).show()
         })
-        shell.openPath(`C:\\Users\\COFORPRA\\Desktop\\Recibo\\${obj.nombre}${obj.date}.pdf`);
+        shell.openPath(`C:\\Users\\COFORPRA\\Desktop\\Recibos\\${obj.nombre}${obj.date}.pdf`);
 //        shell.showItemInFolder('C:\\Users\\D19C1010\\Documents\\CertificadoAAB67KAAGAADMnNAAi.pdf')​
 
     }
@@ -367,7 +367,7 @@ axios.post("http://localhost:3000/api/facturas/send",{objFactura: objFactura}).t
     console.log(error)
 }).then(function(){
     let initial = { buscador :""}
-    detalleSFactura(objDetalles)    
+    detalleSFactura(objDetalles)
     getFactura(initial)
     
 })
@@ -460,7 +460,6 @@ function presentarDatos(obj){
 axios.get(`http://localhost:3000/api/facturas/mostrarNFC/${[obj[0].ID_Factura]}`).then(function(response){
     winPrint.webContents.send('RenderFacturaPrint2', response.data);
     win.webContents.send('RenderFacturaPrint', response.data);
-    console.log("nfc")
     cargarT()         
 }).catch(function(error){
         console.log(error)
@@ -575,10 +574,6 @@ function Print(){
             // handle error
             console.log(error);
           })
-         
-      
-   
-    
  }
 
 function UpdateCli(obj, id){

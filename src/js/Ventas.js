@@ -58,7 +58,7 @@ Comentario = document.getElementById("Comentario")
     ArticuloId = document.getElementsByName("ArticuloId")
     CantidadTabla = document.getElementsByName("CantidadTabla")
     PrecioTabla = document.getElementsByName("PrecioTabla")
-    Comentario.value = "Gracias por su compra"
+    Comentario.value = ""
     
 
 

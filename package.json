@@ -18,7 +18,8 @@
   "author": "TecnoDiaz",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^15.5.7",
+    "@types/node": "^18.0.1",
+    "electron": "^15.1.2",
     "electron-builder": "^22.11.7",
     "versiony": "^2.0.1"
   },
